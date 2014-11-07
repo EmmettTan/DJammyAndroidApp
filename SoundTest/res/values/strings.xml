@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SoundTest</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="sound_0">B 3</string>
+	<string name="sound_1">D 4</string>
+	<string name="sound_2">E 4</string>
+	<string name="sound_3">F# 4</string>
+	<string name="sound_4">A 4</string>
+	<string name="sound_5">B 4</string>
+	
+</resources>
