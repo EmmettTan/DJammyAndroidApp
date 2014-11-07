@@ -1,11 +1,15 @@
 package com.eece381.soundtest;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.MediaController.MediaPlayerControl;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,27 +36,58 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void play_sound_0() {
-
+	public void play_sound_0(View view) {
+		MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.synth_b5);
+		mediaPlayer.start();
 	}
 
-	public void play_sound_1() {
-
+	public void play_sound_1(View view) {
+		MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.synth_d4);
+		mediaPlayer.start(); 
+		mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+	        public void onCompletion(MediaPlayer mp) {
+	            mp.release();
+	        };
+	    });
 	}
 
-	public void play_sound_2() {
-
+	public void play_sound_2(View view) {
+		MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.synth_e4);
+		mediaPlayer.start(); 
+		mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+	        public void onCompletion(MediaPlayer mp) {
+	            mp.release();
+	        };
+	    });
 	}
 
-	public void play_sound_3() {
-
+	public void play_sound_3(View view) {
+		MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.synth_fsharp4);
+		mediaPlayer.start(); 
+		mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+	        public void onCompletion(MediaPlayer mp) {
+	            mp.release();
+	        };
+	    });
 	}
 
-	public void play_sound_4() {
-
+	public void play_sound_4(View view) {
+		MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.synth_a4);
+		mediaPlayer.start();
+		mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+	        public void onCompletion(MediaPlayer mp) {
+	            mp.release();
+	        };
+	    });
 	}
 
-	public void play_sound_5() {
-
+	public void play_sound_5(View view) {
+		MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.synth_b4);
+		mediaPlayer.start(); 
+		mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+	        public void onCompletion(MediaPlayer mp) {
+	            mp.release();
+	        };
+	    });
 	}
 }
