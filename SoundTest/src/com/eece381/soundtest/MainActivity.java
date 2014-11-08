@@ -36,6 +36,16 @@ public class MainActivity extends Activity{
 		return super.onOptionsItemSelected(item);
 	}
 
+	/*
+	 * Here are the functions to play sound. Clicking B3 will call this function and play B3.
+	 * However, there are a few issues with this function that I was not able to fix.
+	 * 
+	 * 1) The sound doesn't come out right away and is kind of delayed
+	 * 2) The sound doesn't always sound the same when it comes out, try pressing random buttons
+	 * quickly and you'll see what I mean
+	 * 3) If you repeatedly press a button, eventually, the buttons won't work anymore. Logcat
+	 * mentions a mediaplayer error (1, 0)
+	 */
 	public void play_sound_0(View view) {
 		MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.synth_b5);
 		mediaPlayer.start();
