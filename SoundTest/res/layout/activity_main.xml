@@ -6,47 +6,53 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.eece381.soundtest.MainActivity" >
+    tools:context="com.eece381.soundtest.MainActivity"
+    android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_width="fill_parent" >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="play_sound_0"
-        android:text="@string/sound_0" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="play_sound_0"
+            android:text="@string/sound_0" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="play_sound_1"
-        android:text="@string/sound_1" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="play_sound_1"
+            android:text="@string/sound_1" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="play_sound_2"
-        android:text="@string/sound_2" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="play_sound_2"
+            android:text="@string/sound_2" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="play_sound_3"
-        android:text="@string/sound_3" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="play_sound_3"
+            android:text="@string/sound_3" />
+    </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
         android:layout_height="wrap_content"
-        android:onClick="play_sound_4"
-        android:text="@string/sound_4" />
+        android:layout_width="fill_parent" >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="play_sound_5"
-        android:text="@string/sound_5" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="play_sound_4"
+            android:text="@string/sound_4" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="play_sound_5"
+            android:text="@string/sound_5" />
+    </LinearLayout>
 
 </LinearLayout>
