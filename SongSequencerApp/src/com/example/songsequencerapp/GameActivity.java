@@ -9,6 +9,7 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -48,18 +49,26 @@ public class GameActivity extends Activity {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		float y = event.getY();
+		View game_view = findViewById (R.id.gameView1);
 		
 		switch (event.getAction()) {
 			case (MotionEvent.ACTION_DOWN):
-				Log.d("MyApp", "Action was DOWN: " + getKeyPosition(y));
+				GameView.onTouch = true;
+				GameView.touchPosition = getKeyPosition(y);
+				Log.d("MyApp", "Action was DOWN: " + GameView.touchPosition);
+				game_view.invalidate();
 				return true;
 				
 			case (MotionEvent.ACTION_MOVE):
+				GameView.touchPosition = getKeyPosition(y);
 				Log.d("MyApp", "Action was MOVE: " + getKeyPosition(y));
+				game_view.invalidate();
 				return true;
 				
 			case (MotionEvent.ACTION_UP):
+				GameView.onTouch = false;
 				Log.d("MyApp", "Action was UP");
+				game_view.invalidate();
 				return true;
 				
 			default:
