@@ -70,6 +70,13 @@ public class MiddlemanConnection extends Activity {
 		}
 	}
 	
+	public void skipConnection(View view) {
+		Toast t = Toast.makeText(getApplicationContext(), "Skipping... Not connected", Toast.LENGTH_LONG);
+		t.show();
+		Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
+		startActivity(intent);
+	}
+	
 	public String getConnectToIP() {
 		String addr = "";
 		EditText text_ip;
