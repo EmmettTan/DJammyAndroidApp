@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -126,7 +127,8 @@ public class MiddlemanConnection extends Activity {
 				msg ="Connection opened successfully";
 				Toast t = Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
 				t.show();
-				
+				Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
+				startActivity(intent);
 				
 			} else {
 				msg = "Connection could not be opened";
