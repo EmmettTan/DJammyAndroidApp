@@ -29,6 +29,7 @@ public class MiddlemanConnection extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_middleman_connection);
+		openSocket(getWindow().getDecorView().findViewById(R.layout.activity_middleman_connection));
 	}
 
 	@Override
@@ -45,7 +46,8 @@ public class MiddlemanConnection extends Activity {
 		// Make sure the socket is not already opened 
 		if (app.sock != null && app.sock.isConnected() && !app.sock.isClosed()) {
 			msgbox.setText("Socket already open");
-			return;
+			Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
+			startActivity(intent);
 		}
 		
 		// open the socket.  SocketConnect is a new subclass
@@ -60,6 +62,9 @@ public class MiddlemanConnection extends Activity {
 		try {
 			s.getOutputStream().close();
 			s.close();
+			
+			Toast t = Toast.makeText(getApplicationContext(), "Connection closed", Toast.LENGTH_LONG);
+			t.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
