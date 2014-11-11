@@ -7,6 +7,7 @@ import java.net.UnknownHostException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -18,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MiddlemanConnection extends Activity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// This call will result in better error messages if you
@@ -30,6 +31,19 @@ public class MiddlemanConnection extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_middleman_connection);
 		openSocket(getWindow().getDecorView().findViewById(R.layout.activity_middleman_connection));
+		
+		EditText ip, port;
+		SharedPreferences settings = getPreferences(MODE_PRIVATE);
+		ip = (EditText) findViewById(R.id.ip1);
+		ip.setText(settings.getString("ip1", "192"));
+		ip = (EditText) findViewById(R.id.ip2);
+		ip.setText(settings.getString("ip2", "168"));
+		ip = (EditText) findViewById(R.id.ip3);
+		ip.setText(settings.getString("ip3", "0"));
+		ip = (EditText) findViewById(R.id.ip4);
+		ip.setText(settings.getString("ip4", "100"));
+		port = (EditText) findViewById(R.id.port);
+		port.setText(settings.getString("port", "50002"));
 	}
 
 	@Override
@@ -139,6 +153,23 @@ public class MiddlemanConnection extends Activity {
 				msg ="Connection opened successfully";
 				Toast t = Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
 				t.show();
+				
+				EditText connection_text;
+				SharedPreferences settings = getPreferences(MODE_PRIVATE);
+				SharedPreferences.Editor editor = settings.edit();
+				
+				connection_text = (EditText) findViewById(R.id.ip1);
+				editor.putString("ip1", connection_text.getText().toString());
+				connection_text = (EditText) findViewById(R.id.ip2);
+				editor.putString("ip2", connection_text.getText().toString());
+				connection_text = (EditText) findViewById(R.id.ip3);
+				editor.putString("ip3", connection_text.getText().toString());
+				connection_text = (EditText) findViewById(R.id.ip4);
+				editor.putString("ip4", connection_text.getText().toString());
+				connection_text = (EditText) findViewById(R.id.port);
+				editor.putString("port", connection_text.getText().toString());
+				editor.commit();
+				
 				Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
 				startActivity(intent);
 				

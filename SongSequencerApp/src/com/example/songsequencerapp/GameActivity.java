@@ -25,6 +25,7 @@ import android.view.WindowManager;
 public class GameActivity extends Activity {
 	public static final String KEY_STRING = "KEY";
 	public static final String INSTRUMENT_STRING = "INSTRUMENT";
+	public static boolean onTouch = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class GameActivity extends Activity {
 		
 		switch (event.getAction()) {
 			case (MotionEvent.ACTION_DOWN):
-				GameView.onTouch = true;
+				onTouch = true;
 				GameView.touchPosition = key_position;
 				game_view.invalidate();
 				sendMessage(composeMessage(0, key_position));
@@ -86,7 +87,7 @@ public class GameActivity extends Activity {
 				return true;
 				
 			case (MotionEvent.ACTION_UP):
-				GameView.onTouch = false;
+				onTouch = false;
 				game_view.invalidate();
 				Log.d("MyApp", "Action was UP");
 				return true;
@@ -156,6 +157,8 @@ public class GameActivity extends Activity {
 						
 						JSONObject json = new JSONObject(s);
 						Log.d("MyMessage", "Instrument: " + json.getString(INSTRUMENT_STRING) + " Key: " + json.getString(KEY_STRING));
+						//PLAY SOUND HERE
+					
 					}
 				} catch (IOException e) {
 					e.printStackTrace();

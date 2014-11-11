@@ -12,12 +12,10 @@ public class GameView extends View {
 	public static final int DIVISIONS = 10;
 	private int light_blue = Color.rgb(97, 198, 223);
 	private int dark_blue = Color.rgb(0, 0, 153);
-	public static boolean onTouch = false; 
 	public static int touchPosition;
 	
 	public GameView(Context context, AttributeSet attribute_set) {
 		super(context, attribute_set);
-		onTouch = false;
 	}
 	
 	@Override
@@ -35,7 +33,7 @@ public class GameView extends View {
 		}
 		
 		//Draw rectangle on touch
-		if(onTouch){
+		if(GameActivity.onTouch){
 			paint.setColor(light_blue);
 	        canvas.drawRect(0, touchPosition*getKeySize(), max_x, touchPosition*getKeySize()+getKeySize(), paint);
 		}	
