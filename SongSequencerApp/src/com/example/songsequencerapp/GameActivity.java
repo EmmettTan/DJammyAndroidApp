@@ -39,7 +39,7 @@ public class GameActivity extends Activity {
 		// input queue every 500 ms
 		TCPReadTimerTask tcp_task = new TCPReadTimerTask();
 		Timer tcp_timer = new Timer();
-		tcp_timer.schedule(tcp_task, 3000, 500);
+		tcp_timer.schedule(tcp_task, 3000, 250);
 	}
 
 	@Override
@@ -74,14 +74,14 @@ public class GameActivity extends Activity {
 				GameView.onTouch = true;
 				GameView.touchPosition = key_position;
 				game_view.invalidate();
-				sendMessage(composeMessage(-1, key_position));
+				sendMessage(composeMessage(0, key_position));
 				Log.d("MyApp", "Action was DOWN: " + GameView.touchPosition);
 				return true;
 				
 			case (MotionEvent.ACTION_MOVE):
 				GameView.touchPosition = key_position;
 				game_view.invalidate();
-				sendMessage(composeMessage(-1, key_position));
+				sendMessage(composeMessage(0, key_position));
 				Log.d("MyApp", "Action was MOVE: " + getKeyPosition(y));
 				return true;
 				
@@ -152,11 +152,15 @@ public class GameActivity extends Activity {
 						byte buf[] = new byte[bytes_avail];
 						in.read(buf);
 
-						final String s = new String(buf, 0, bytes_avail, "US-ASCII");
-						//Log.d("MyMessage", s);
+						final String s = new String(buf, 0, bytes_avail, "US-ASCII").substring(1, bytes_avail);
 						
+						JSONObject json = new JSONObject(s);
+						Log.d("MyMessage", "Instrument: " + json.getString(INSTRUMENT_STRING) + " Key: " + json.getString(KEY_STRING));
 					}
 				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					Log.d("MyError", "String to JSON conversion error!");
 					e.printStackTrace();
 				}
 			}
