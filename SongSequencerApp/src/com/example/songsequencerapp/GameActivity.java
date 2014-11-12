@@ -52,6 +52,12 @@ public class GameActivity extends Activity {
 		Timer tcp_timer = new Timer();
 		tcp_timer.schedule(tcp_task, 3000, 250);
 		
+		// Set up a timer task. We will use the timer to check the
+				// input queue every 500 ms
+		BPMTimerTask bpmTask = new BPMTimerTask();
+		Timer bpm_timer = new Timer();
+		bpm_timer.schedule(bpmTask, 210, 210);
+
 		synth_b5 = MediaPlayer.create(getApplicationContext(), R.raw.synth_b5);
 		synth_d4 = MediaPlayer.create(getApplicationContext(), R.raw.synth_d4);
 		synth_e4 = MediaPlayer.create(getApplicationContext(), R.raw.synth_e4);
@@ -101,7 +107,6 @@ public class GameActivity extends Activity {
 			game_view.invalidate();
 			sendMessage(composeMessage(0, key_position));
 			Log.d("MyApp", "Action was DOWN: " + GameView.touchPosition);
-			playSound(GameView.touchPosition);
 			return true;
 
 		case (MotionEvent.ACTION_MOVE):
@@ -109,7 +114,6 @@ public class GameActivity extends Activity {
 			game_view.invalidate();
 			sendMessage(composeMessage(0, key_position));
 			Log.d("MyApp", "Action was MOVE: " + getKeyPosition(y));
-			playSound(GameView.touchPosition);
 			return true;
 
 		case (MotionEvent.ACTION_UP):
@@ -201,6 +205,16 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	// Used to receive message from the middleman/DE2
+	public class BPMTimerTask extends TimerTask {
+		public void run() {
+			Log.d("BPMTimerTask", "Playing note");
+			if (onTouch == true) {
+				playSound(GameView.touchPosition);
+			}
+		}
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -243,10 +257,10 @@ public class GameActivity extends Activity {
 
 	public void playSoundFromMediaPlayer(MediaPlayer mediaPlayer) {
 		mediaPlayer.start();
-//		mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-//			public void onCompletion(MediaPlayer mp) {
-//				mp.release();
-//			};
-//		});
+		// mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+		// public void onCompletion(MediaPlayer mp) {
+		// mp.release();
+		// };
+		// });
 	}
 }
