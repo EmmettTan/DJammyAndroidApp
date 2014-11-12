@@ -1,7 +1,6 @@
 package com.example.songsequencerapp;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -172,8 +171,7 @@ public class MiddlemanConnection extends Activity {
 				editor.commit();
 				
 				Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
-			
-					
+				startActivity(intent);
 				
 			} else {
 				msg = "Connection could not be opened";

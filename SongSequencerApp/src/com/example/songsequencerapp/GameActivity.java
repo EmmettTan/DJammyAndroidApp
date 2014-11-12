@@ -9,13 +9,12 @@ import java.util.TimerTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.songsequencerapp.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -36,6 +35,8 @@ public class GameActivity extends Activity {
 	public MediaPlayer synth_fsharp4 = null;
 	public MediaPlayer synth_a4 = null;
 	public MediaPlayer synth_b4 = null;
+	public SoundPool soundpool;
+	int soundId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,10 @@ public class GameActivity extends Activity {
 				R.raw.synth_fsharp4);
 		synth_a4 = MediaPlayer.create(getApplicationContext(), R.raw.synth_a4);
 		synth_b4 = MediaPlayer.create(getApplicationContext(), R.raw.synth_b4);
+		
+		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+		/** soundId for Later handling of sound pool **/
+		soundId = soundpool.load(getApplicationContext(), R.raw.synth_b5, 1); // in 2nd param u have to pass your desire ringtone
 	}
 
 	@Override

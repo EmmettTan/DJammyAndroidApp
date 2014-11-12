@@ -1,6 +1,5 @@
 package com.example.songsequencerapp;
 
-import android.R.bool;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
