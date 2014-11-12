@@ -36,6 +36,9 @@ public class MainActivity extends Activity{
 		return super.onOptionsItemSelected(item);
 	}
 
+	
+	
+	
 	/*
 	 * Here are the functions to play sound. Clicking B3 will call this function and play B3.
 	 * However, there are a few issues with this function that I was not able to fix.
@@ -49,6 +52,11 @@ public class MainActivity extends Activity{
 	public void play_sound_0(View view) {
 		MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.synth_b5);
 		mediaPlayer.start();
+		mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+	        public void onCompletion(MediaPlayer mp) {
+	            mp.release();
+	        };
+	    });
 	}
 
 	public void play_sound_1(View view) {

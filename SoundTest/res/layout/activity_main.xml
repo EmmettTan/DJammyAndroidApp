@@ -14,28 +14,33 @@
         android:layout_width="fill_parent" >
 
         <Button
+            android:id="@+id/sound_0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="play_sound_0"
             android:text="@string/sound_0" />
 
         <Button
+            android:id="@+id/sound_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="play_sound_1"
             android:text="@string/sound_1" />
 
         <Button
+            android:id="@+id/sound_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="play_sound_2"
             android:text="@string/sound_2" />
 
         <Button
+            android:id="@+id/sound_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="play_sound_3"
             android:text="@string/sound_3" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -43,16 +48,19 @@
         android:layout_width="fill_parent" >
 
         <Button
+            android:id="@+id/sound_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="play_sound_4"
             android:text="@string/sound_4" />
 
         <Button
+            android:id="@+id/sound_5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="play_sound_5"
             android:text="@string/sound_5" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -9,8 +9,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class GameView extends View {
-	public static final int DIVISIONS = 10;
+	public static final int DIVISIONS = 6;
 	private int light_blue = Color.rgb(97, 198, 223);
+	private int white = Color.rgb(255, 255, 255);
 	private int dark_blue = Color.rgb(0, 0, 153);
 	public static int touchPosition;
 	
@@ -20,7 +21,7 @@ public class GameView extends View {
 	
 	@Override
 	public void onDraw(Canvas canvas) {
-		canvas.drawColor(dark_blue);
+		canvas.drawColor(white);
 		Paint paint = new Paint();
 		int max_x = getWidth() - 1;
 		int max_y = getHeight() - 1;
