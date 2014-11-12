@@ -102,10 +102,10 @@ public class GameActivity extends Activity {
 		JSONObject json = new JSONObject();
 		
 		try {
-			json.accumulate(INSTRUMENT_STRING, instrument);
-			json.accumulate(KEY_STRING, key);
+			json.put(INSTRUMENT_STRING, instrument);
+			json.put(KEY_STRING, key);
 		} catch (JSONException e) {
-			Log.d("MyError", "Error in JSON!");
+			Log.d("MyError", "Error putting in JSON!");
 			e.printStackTrace();
 		}
 		
@@ -154,8 +154,9 @@ public class GameActivity extends Activity {
 						in.read(buf);
 
 						final String s = new String(buf, 0, bytes_avail, "US-ASCII").substring(1, bytes_avail);
-						
+						Log.d("MyMessage", "Received: " + s);
 						JSONObject json = new JSONObject(s);
+						
 						Log.d("MyMessage", "Instrument: " + json.getString(INSTRUMENT_STRING) + " Key: " + json.getString(KEY_STRING));
 						//PLAY SOUND HERE
 					
