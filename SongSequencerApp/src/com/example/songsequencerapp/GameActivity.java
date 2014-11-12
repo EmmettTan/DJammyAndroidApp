@@ -29,14 +29,15 @@ public class GameActivity extends Activity {
 	public static final String KEY_STRING = "KEY";
 	public static final String INSTRUMENT_STRING = "INSTRUMENT";
 	public static boolean onTouch = false;
-	public MediaPlayer synth_b5 = null;
-	public MediaPlayer synth_d4 = null;
-	public MediaPlayer synth_e4 = null;
-	public MediaPlayer synth_fsharp4 = null;
-	public MediaPlayer synth_a4 = null;
-	public MediaPlayer synth_b4 = null;
-	public SoundPool soundpool;
-	int soundId;
+	public int synth_b5;
+	public int synth_d4;
+	public int synth_e4;
+	public int synth_fsharp4;
+	public int synth_a4;
+	public int synth_b4;
+	public int bassdrum;
+	public int bassdrum_timer=0;
+	SoundPool soundpool;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +59,15 @@ public class GameActivity extends Activity {
 		BPMTimerTask bpmTask = new BPMTimerTask();
 		Timer bpm_timer = new Timer();
 		bpm_timer.schedule(bpmTask, 210, 210);
-
-		synth_b5 = MediaPlayer.create(getApplicationContext(), R.raw.synth_b5);
-		synth_d4 = MediaPlayer.create(getApplicationContext(), R.raw.synth_d4);
-		synth_e4 = MediaPlayer.create(getApplicationContext(), R.raw.synth_e4);
-		synth_fsharp4 = MediaPlayer.create(getApplicationContext(),
-				R.raw.synth_fsharp4);
-		synth_a4 = MediaPlayer.create(getApplicationContext(), R.raw.synth_a4);
-		synth_b4 = MediaPlayer.create(getApplicationContext(), R.raw.synth_b4);
 		
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-		/** soundId for Later handling of sound pool **/
-		soundId = soundpool.load(getApplicationContext(), R.raw.synth_b5, 1); // in 2nd param u have to pass your desire ringtone
+		synth_b5 = soundpool.load(getApplicationContext(), R.raw.synth_b5, 1); // in 2nd param u have to pass your desire ringtone
+		synth_e4 = soundpool.load(getApplicationContext(), R.raw.synth_e4, 1); // in 2nd param u have to pass your desire ringtone
+		synth_fsharp4 = soundpool.load(getApplicationContext(), R.raw.synth_fsharp4, 1); // in 2nd param u have to pass your desire ringtone
+		synth_d4 = soundpool.load(getApplicationContext(), R.raw.synth_d4, 1); // in 2nd param u have to pass your desire ringtone
+		synth_a4 = soundpool.load(getApplicationContext(), R.raw.synth_a4, 1); // in 2nd param u have to pass your desire ringtone
+		synth_b4 = soundpool.load(getApplicationContext(), R.raw.synth_b4, 1); // in 2nd param u have to pass your desire ringtone
+		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
 	}
 
 	@Override
@@ -214,6 +212,13 @@ public class GameActivity extends Activity {
 	public class BPMTimerTask extends TimerTask {
 		public void run() {
 			Log.d("BPMTimerTask", "Playing note");
+			if(bassdrum_timer == 1){
+				soundpool.play(bassdrum, (float)0.7, (float)0.7, 0, 0, 1);	
+				bassdrum_timer=0;
+			}
+			else{
+				bassdrum_timer=1;
+			}
 			if (onTouch == true) {
 				playSound(GameView.touchPosition);
 			}
@@ -236,22 +241,22 @@ public class GameActivity extends Activity {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
 		switch (touchPosition) {
 		case 0:
-			playSoundFromMediaPlayer(synth_b5);
+			soundpool.play(synth_b5, 1, 1, 0, 0, 1);
 			break;
 		case 1:
-			playSoundFromMediaPlayer(synth_d4);
+			soundpool.play(synth_d4, 1, 1, 0, 0, 1);
 			break;
 		case 2:
-			playSoundFromMediaPlayer(synth_e4);
+			soundpool.play(synth_e4, 1, 1, 0, 0, 1);
 			break;
 		case 3:
-			playSoundFromMediaPlayer(synth_fsharp4);
+			soundpool.play(synth_fsharp4, 1, 1, 0, 0, 1);
 			break;
 		case 4:
-			playSoundFromMediaPlayer(synth_a4);
+			soundpool.play(synth_a4, 1, 1, 0, 0, 1);
 			break;
 		case 5:
-			playSoundFromMediaPlayer(synth_b4);
+			soundpool.play(synth_b4, 1, 1, 0, 0, 1);
 			break;
 		default:
 			Log.d("PlaySound", "Redundant Key Pressed "
