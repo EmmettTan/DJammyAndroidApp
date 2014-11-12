@@ -76,7 +76,7 @@ public class GameActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		bpm_timer.schedule(bpmTask, 210, 210);
-		tcp_timer.schedule(tcp_task, 3000, 250);
+		tcp_timer.schedule(tcp_task, 100, 100);
 	}
 	
 	@Override
