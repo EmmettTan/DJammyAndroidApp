@@ -4,29 +4,22 @@
 #include "sys/alt_timestamp.h"
 
 #include <assert.h>
-
-#define MSG_LENGTH 100
-
-void usb_initialization();
-void receive_message(unsigned char *message);
-void send_message(unsigned char *message);
-void clean_message(unsigned char *message);
+int init_usb();
 
 int main() {
-	unsigned char message[MSG_LENGTH];
 
-	usb_initialization();
 
-	while(1){
-		receive_message(message);
-		send_message(message);
-		clean_message(message);
-	}
+	int i;
+	int bytes_expected;
+	int bytes_recvd;
+	int total_recvd;
+	unsigned char data;
+	unsigned char msgdata;
+	unsigned char message_tx[] = "EECE381 is so much fun";
+	unsigned char message_rx[100];
+	int id;
+	int msg_length;
 
-	return 0;
-}
-
-void usb_initialization(){
 	printf("USB Initialization\n");
 	alt_up_usb_dev * usb_dev;
 	usb_dev = alt_up_usb_open_dev(USB_0_NAME);
@@ -41,56 +34,94 @@ void usb_initialization(){
 		usb_device_poll();
 	}
 	printf("Done polling USB\n");
-}
 
-void receive_message(unsigned char *message){
-	int i;
-	int bytes_expected;
-	int bytes_recvd;
-	int total_recvd;
-	unsigned char data;
+	printf("Sending the message to the Middleman\n");
 
+	// Start with the number of bytes in our message
+	unsigned char message_length = strlen(message_tx);
+	usb_device_send(&message_length, 1);
+
+	// Now send the actual message to the Middleman
+	usb_device_send(message_tx, message_length);
+
+	// Now receive the message from the Middleman
+	printf("Waiting for data to come back from the Middleman\n");
+while(1){
 	// First byte is the number of characters in our message
 	bytes_expected = 1;
 	total_recvd = 0;
+	data = 0;
+	msgdata = 0;
+
+	//finds id
 	while (total_recvd < bytes_expected) {
-		bytes_recvd = usb_device_recv(&data, 1);
-		if (bytes_recvd > 0)
-			total_recvd += bytes_recvd;
+
+			bytes_recvd = usb_device_recv(&data, 1);
+
+			if (bytes_recvd > 0){
+				total_recvd += bytes_recvd;
+
+			}
+		}
+	id = data;
+	printf("Id is: %i \t", id);
+	if(id==1){
+		unsigned char master[] = "host";
+
+		usb_device_send(master, strlen(master));
 	}
 
-	int num_to_receive = (int) data;
+
+	total_recvd = 0;
+//finds msg size
+	while (total_recvd < bytes_expected) {
+
+		bytes_recvd = usb_device_recv(&msgdata, 1);
+
+		if (bytes_recvd > 0){
+			total_recvd += bytes_recvd;
+
+		}
+	}
+	msg_length = msgdata;
+	printf("Message Length is: %i \t", msg_length);
+
+	int num_to_receive = msgdata;
 	printf("About to receive %d characters:\n", num_to_receive);
 
 	bytes_expected = num_to_receive;
+	//bytes_expected = 2;
+
 	total_recvd = 0;
-	while (total_recvd < bytes_expected) {
-		bytes_recvd = usb_device_recv(message + total_recvd, 1);
+	while (total_recvd < num_to_receive) {
+		bytes_recvd = usb_device_recv(message_rx + total_recvd, 1);
 		if (bytes_recvd > 0)
 			total_recvd += bytes_recvd;
 	}
 
 	for (i = 0; i < num_to_receive; i++) {
-		printf("%c", message[i]);
+		//printf("%i\t", (int)message_rx[i]);
+		printf("%c\t", message_rx[i]);
 	}
+
 	printf("\n");
-}
-
-void send_message(unsigned char *message){
-	printf("Sending the message to the Middleman\n");
-	// Start with the number of bytes in our message
-	unsigned char message_length = strlen(message);
-	usb_device_send(&message_length, 1);
-
-	// Now send the actual message to the Middleman
-	usb_device_send(message, message_length);
 	printf("Message Echo Complete\n");
+
+
+}
+	//return 0;
 }
 
-void clean_message(unsigned char *message){
-	int i;
-	for (i=0; i<MSG_LENGTH; i++){
-		message[i] = '\0';
+int init_usb() {
+
+	alt_up_usb_dev * usb_dev;
+	usb_dev = alt_up_usb_open_dev(USB_0_NAME);
+	assert(usb_dev);
+	usb_device_init(usb_dev, USB_0_IRQ);
+	printf("Polling USB device.\nInstall the USB driver now.\n");
+	while (1) {
+		usb_device_poll();
+
 	}
-	printf("cleaned buffer\n");
 }
+

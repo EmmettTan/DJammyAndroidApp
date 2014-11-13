@@ -27,24 +27,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MiddlemanConnection extends Activity {
-	
+	protected boolean isHost;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// This call will result in better error messages if you
 		// try to do things in the wrong thread.
-		
+
 		TCPReadTimerTask tcp_task = new TCPReadTimerTask();
 		Timer tcp_timer = new Timer();
-		tcp_timer.schedule(tcp_task, 3000, 250);
-		
+		tcp_timer.schedule(tcp_task, 0, 100);
+
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
 				.detectDiskReads().detectDiskWrites().detectNetwork()
 				.penaltyLog().build());
-		
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_middleman_connection);
-		openSocket(getWindow().getDecorView().findViewById(R.layout.activity_middleman_connection));
-		
+		openSocket(getWindow().getDecorView().findViewById(
+				R.layout.activity_middleman_connection));
+
 		EditText ip, port;
 		SharedPreferences settings = getPreferences(MODE_PRIVATE);
 		ip = (EditText) findViewById(R.id.ip1);
@@ -65,45 +67,48 @@ public class MiddlemanConnection extends Activity {
 		getMenuInflater().inflate(R.menu.middleman_connection, menu);
 		return true;
 	}
-	
+
 	public void openSocket(View view) {
 		MyApplication app = (MyApplication) getApplication();
 		TextView msgbox = (TextView) findViewById(R.id.error_message_box);
 
-		// Make sure the socket is not already opened 
+		// Make sure the socket is not already opened
 		if (app.sock != null && app.sock.isConnected() && !app.sock.isClosed()) {
 			msgbox.setText("Socket already open");
-			Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
+			Intent intent = new Intent(MiddlemanConnection.this,
+					GameActivity.class);
 			startActivity(intent);
 		}
-		
-		// open the socket.  SocketConnect is a new subclass
-	    // (defined below).  This creates an instance of the subclass
+
+		// open the socket. SocketConnect is a new subclass
+		// (defined below). This creates an instance of the subclass
 		// and executes the code in it.
 		new SocketConnect().execute((Void) null);
 	}
-	
+
 	public void closeSocket(View view) {
 		MyApplication app = (MyApplication) getApplication();
 		Socket s = app.sock;
 		try {
 			s.getOutputStream().close();
 			s.close();
-			
-			Toast t = Toast.makeText(getApplicationContext(), "Connection closed", Toast.LENGTH_LONG);
+
+			Toast t = Toast.makeText(getApplicationContext(),
+					"Connection closed", Toast.LENGTH_LONG);
 			t.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void skipConnection(View view) {
-		Toast t = Toast.makeText(getApplicationContext(), "Skipping... Not connected", Toast.LENGTH_LONG);
+		Toast t = Toast.makeText(getApplicationContext(),
+				"Skipping... Not connected", Toast.LENGTH_LONG);
 		t.show();
 		Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
 		startActivity(intent);
 	}
-	
+
 	public String getConnectToIP() {
 		String addr = "";
 		EditText text_ip;
@@ -117,7 +122,7 @@ public class MiddlemanConnection extends Activity {
 		addr += "." + text_ip.getText().toString();
 		return addr;
 	}
-	
+
 	public Integer getConnectToPort() {
 		Integer port;
 		EditText text_port;
@@ -127,11 +132,10 @@ public class MiddlemanConnection extends Activity {
 
 		return port;
 	}
-	
 
 	public class SocketConnect extends AsyncTask<Void, Void, Socket> {
 
-		// The main parcel of work for this thread.  Opens a socket
+		// The main parcel of work for this thread. Opens a socket
 		// to connect to the specified IP.
 		protected Socket doInBackground(Void... voids) {
 			Socket s = null;
@@ -151,26 +155,38 @@ public class MiddlemanConnection extends Activity {
 			}
 			return s;
 		}
-		
 
-		// After executing the doInBackground method, this is 
+		// After executing the doInBackground method, this is
 		// automatically called, in the UI (main) thread to store
 		// the socket in this app's persistent storage
 		protected void onPostExecute(Socket s) {
 			MyApplication myApp = (MyApplication) MiddlemanConnection.this
 					.getApplication();
 			myApp.sock = s;
-			
+
 			String msg;
+			String msg2 = "You are the host of this Song Sequence Session!";
+			String msg3 = "You have joined this Song Sequence Session!";
+
 			if (myApp.sock.isConnected()) {
-				msg ="Connection opened successfully";
-				Toast t = Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
+				msg = "Connection opened successfully";
+				Toast t = Toast.makeText(getApplicationContext(), msg,
+						Toast.LENGTH_LONG);
 				t.show();
-				
+				if (isHost == true) {
+					Toast a = Toast.makeText(getApplicationContext(), msg2,
+							Toast.LENGTH_LONG);
+					a.show();
+				} else {
+					Toast b = Toast.makeText(getApplicationContext(), msg3,
+							Toast.LENGTH_LONG);
+					b.show();
+				}
+
 				EditText connection_text;
 				SharedPreferences settings = getPreferences(MODE_PRIVATE);
 				SharedPreferences.Editor editor = settings.edit();
-				
+
 				connection_text = (EditText) findViewById(R.id.ip1);
 				editor.putString("ip1", connection_text.getText().toString());
 				connection_text = (EditText) findViewById(R.id.ip2);
@@ -183,18 +199,20 @@ public class MiddlemanConnection extends Activity {
 				editor.putString("port", connection_text.getText().toString());
 				editor.commit();
 				sendMessage(new String("yo"));
-				
-				Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
+
+				Intent intent = new Intent(MiddlemanConnection.this,
+						GameActivity.class);
 				startActivity(intent);
-				
+
 			} else {
 				msg = "Connection could not be opened";
-				Toast t = Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
+				Toast t = Toast.makeText(getApplicationContext(), msg,
+						Toast.LENGTH_LONG);
 				t.show();
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -249,9 +267,12 @@ public class MiddlemanConnection extends Activity {
 						in.read(buf);
 
 						final String s = new String(buf, 0, bytes_avail,
-								"US-ASCII").substring(1, bytes_avail);
+								"US-ASCII");
+						if (s == "host") {
+							isHost = true;
+						}
 						Log.d("MyMessage", "Received: " + s);
-		
+
 						// PLAY SOUND HERE
 
 					}
@@ -262,4 +283,3 @@ public class MiddlemanConnection extends Activity {
 		}
 	}
 }
-
