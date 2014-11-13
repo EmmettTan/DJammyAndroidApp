@@ -9,9 +9,6 @@ import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -79,11 +76,21 @@ public class MiddlemanConnection extends Activity {
 					GameActivity.class);
 			startActivity(intent);
 		}
+//<<<<<<< HEAD
 
 		// open the socket. SocketConnect is a new subclass
 		// (defined below). This creates an instance of the subclass
 		// and executes the code in it.
-		new SocketConnect().execute((Void) null);
+		//new SocketConnect().execute((Void) null);
+//=======
+		else{
+			// open the socket.  SocketConnect is a new subclass
+		    // (defined below).  This creates an instance of the subclass
+			// and executes the code in it.
+			new SocketConnect().execute((Void) null);
+		}
+		
+//>>>>>>> 1eaf8e813e408253ad14065f6e4d10b0898e2007
 	}
 
 	public void closeSocket(View view) {

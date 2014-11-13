@@ -38,6 +38,10 @@ public class GameActivity extends Activity {
 	public int bassdrum;
 	public int bassdrum_timer=0;
 	SoundPool soundpool;
+	Timer bpm_timer;
+	Timer tcp_timer;
+	BPMTimerTask bpmTask;
+	TCPReadTimerTask tcp_task;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +54,13 @@ public class GameActivity extends Activity {
 
 		// Set up a timer task. We will use the timer to check the
 		// input queue every 500 ms
-		TCPReadTimerTask tcp_task = new TCPReadTimerTask();
-		Timer tcp_timer = new Timer();
-		tcp_timer.schedule(tcp_task, 3000, 250);
+		tcp_task = new TCPReadTimerTask();
+		tcp_timer = new Timer();
 		
 		// Set up a timer task. We will use the timer to check the
-				// input queue every 500 ms
-		BPMTimerTask bpmTask = new BPMTimerTask();
-		Timer bpm_timer = new Timer();
-		bpm_timer.schedule(bpmTask, 210, 210);
+		// input queue every 500 ms
+		bpmTask = new BPMTimerTask();
+		bpm_timer = new Timer();
 		
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		synth_b5 = soundpool.load(getApplicationContext(), R.raw.synth_b5, 1); // in 2nd param u have to pass your desire ringtone
@@ -73,7 +75,15 @@ public class GameActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-
+		bpm_timer.schedule(bpmTask, 210, 210);
+		tcp_timer.schedule(tcp_task, 100, 100);
+	}
+	
+	@Override
+	protected void onPause(){
+		super.onPause();
+		bpmTask.cancel();
+		tcp_task.cancel();
 	}
 
 	@Override
