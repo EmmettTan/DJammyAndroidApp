@@ -42,6 +42,7 @@ public class GameActivity extends Activity {
 	Timer tcp_timer;
 	BPMTimerTask bpmTask;
 	TCPReadTimerTask tcp_task;
+	boolean keyPressed = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +117,7 @@ public class GameActivity extends Activity {
 		switch (event.getAction()) {
 		case (MotionEvent.ACTION_DOWN):
 			onTouch = true;
+			keyPressed = true;
 			GameView.touchPosition = key_position;
 			game_view.invalidate();
 			sendMessage(composeMessage(0, key_position));
@@ -231,6 +233,11 @@ public class GameActivity extends Activity {
 			}
 			if (onTouch == true) {
 				playSound(GameView.touchPosition);
+				keyPressed = false;
+			}
+			else if (keyPressed == true){
+				playSound(GameView.touchPosition);
+				keyPressed = false;
 			}
 		}
 	}
