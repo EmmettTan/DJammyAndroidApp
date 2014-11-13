@@ -25,16 +25,39 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+
+
 public class GameActivity extends Activity {
 	public static final String KEY_STRING = "KEY";
 	public static final String INSTRUMENT_STRING = "INSTRUMENT";
 	public static boolean onTouch = false;
-	public int synth_b5;
-	public int synth_d4;
-	public int synth_e4;
-	public int synth_fsharp4;
-	public int synth_a4;
-	public int synth_b4;
+	
+	//vec72 sounds
+	public int vec72_b3;
+	public int vec72_d4;
+	public int vec72_e4;
+	public int vec72_fsharp4;
+	public int vec72_a4;
+	public int vec72_b4;
+	public int vec72_d5;
+	public int vec72_e5;
+	public int vec72_fsharp5;
+	public int vec72_a5;
+	public int vec72_b5;
+	
+	//vec216 sounds
+	public int vec216_b3;
+	public int vec216_d4;
+	public int vec216_e4;
+	public int vec216_fsharp4;
+	public int vec216_a4;
+	public int vec216_b4;
+	public int vec216_d5;
+	public int vec216_e5;
+	public int vec216_fsharp5;
+	public int vec216_a5;
+	public int vec216_b5;
+	
 	public int bassdrum;
 	public int bassdrum_timer=0;
 	SoundPool soundpool;
@@ -64,12 +87,34 @@ public class GameActivity extends Activity {
 		bpm_timer = new Timer();
 		
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-		synth_b5 = soundpool.load(getApplicationContext(), R.raw.synth_b5, 1); // in 2nd param u have to pass your desire ringtone
-		synth_e4 = soundpool.load(getApplicationContext(), R.raw.synth_e4, 1); // in 2nd param u have to pass your desire ringtone
-		synth_fsharp4 = soundpool.load(getApplicationContext(), R.raw.synth_fsharp4, 1); // in 2nd param u have to pass your desire ringtone
-		synth_d4 = soundpool.load(getApplicationContext(), R.raw.synth_d4, 1); // in 2nd param u have to pass your desire ringtone
-		synth_a4 = soundpool.load(getApplicationContext(), R.raw.synth_a4, 1); // in 2nd param u have to pass your desire ringtone
-		synth_b4 = soundpool.load(getApplicationContext(), R.raw.synth_b4, 1); // in 2nd param u have to pass your desire ringtone
+		//First Octave
+		vec216_b3 = soundpool.load(getApplicationContext(), R.raw.vec216_b3, 1); // in 2nd param u have to pass your desire ringtone
+		vec216_d4 = soundpool.load(getApplicationContext(), R.raw.vec216_d4, 1); // in 2nd param u have to pass your desire ringtone
+		vec216_e4 = soundpool.load(getApplicationContext(), R.raw.vec216_e4, 1); // in 2nd param u have to pass your desire ringtone
+		vec216_fsharp4 = soundpool.load(getApplicationContext(), R.raw.vec216_fsharp4, 1); // in 2nd param u have to pass your desire ringtone
+		vec216_a4 = soundpool.load(getApplicationContext(), R.raw.vec216_a4, 1); // in 2nd param u have to pass your desire ringtone
+		vec216_b4 = soundpool.load(getApplicationContext(), R.raw.vec216_b4, 1); // in 2nd param u have to pass your desire ringtone
+		//Second Octave
+		vec216_d5 = soundpool.load(getApplicationContext(), R.raw.vec216_d5, 1); // in 2nd param u have to pass your desire ringtone
+		vec216_e5 = soundpool.load(getApplicationContext(), R.raw.vec216_e5, 1); // in 2nd param u have to pass your desire ringtone
+		vec216_fsharp5 = soundpool.load(getApplicationContext(), R.raw.vec216_fsharp5, 1); // in 2nd param u have to pass your desire ringtone
+		vec216_a5 = soundpool.load(getApplicationContext(), R.raw.vec216_a5, 1); // in 2nd param u have to pass your desire ringtone
+		vec216_b5 = soundpool.load(getApplicationContext(), R.raw.vec216_b5, 1); // in 2nd param u have to pass your desire ringtone
+	
+		//Vec72 octave1
+		vec72_b3 = soundpool.load(getApplicationContext(), R.raw.vec72_b3, 1); // in 2nd param u have to pass your desire ringtone
+		vec72_d4 = soundpool.load(getApplicationContext(), R.raw.vec72_d4, 1); // in 2nd param u have to pass your desire ringtone
+		vec72_e4 = soundpool.load(getApplicationContext(), R.raw.vec72_e4, 1); // in 2nd param u have to pass your desire ringtone
+		vec72_fsharp4 = soundpool.load(getApplicationContext(), R.raw.vec72_fsharp4, 1); // in 2nd param u have to pass your desire ringtone
+		vec72_a4 = soundpool.load(getApplicationContext(), R.raw.vec72_a4, 1); // in 2nd param u have to pass your desire ringtone
+		vec72_b4 = soundpool.load(getApplicationContext(), R.raw.vec72_b4, 1); // in 2nd param u have to pass your desire ringtone
+		//Second Octave
+		vec72_d5 = soundpool.load(getApplicationContext(), R.raw.vec72_d5, 1); // in 2nd param u have to pass your desire ringtone
+		vec72_e5 = soundpool.load(getApplicationContext(), R.raw.vec72_e5, 1); // in 2nd param u have to pass your desire ringtone
+		vec72_fsharp5 = soundpool.load(getApplicationContext(), R.raw.vec72_fsharp5, 1); // in 2nd param u have to pass your desire ringtone
+		vec72_a5 = soundpool.load(getApplicationContext(), R.raw.vec72_a5, 1); // in 2nd param u have to pass your desire ringtone
+		vec72_b5 = soundpool.load(getApplicationContext(), R.raw.vec72_b5, 1); // in 2nd param u have to pass your desire ringtone
+		
 		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
 	}
 
@@ -258,22 +303,37 @@ public class GameActivity extends Activity {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
 		switch (touchPosition) {
 		case 0:
-			soundpool.play(synth_b5, 1, 1, 0, 0, 1);
+			soundpool.play(vec72_b3, 1, 1, 0, 0, 1);
 			break;
 		case 1:
-			soundpool.play(synth_d4, 1, 1, 0, 0, 1);
+			soundpool.play(vec72_d4, 1, 1, 0, 0, 1);
 			break;
 		case 2:
-			soundpool.play(synth_e4, 1, 1, 0, 0, 1);
+			soundpool.play(vec72_e4, 1, 1, 0, 0, 1);
 			break;
 		case 3:
-			soundpool.play(synth_fsharp4, 1, 1, 0, 0, 1);
+			soundpool.play(vec72_fsharp4, 1, 1, 0, 0, 1);
 			break;
 		case 4:
-			soundpool.play(synth_a4, 1, 1, 0, 0, 1);
+			soundpool.play(vec72_a4, 1, 1, 0, 0, 1);
 			break;
 		case 5:
-			soundpool.play(synth_b4, 1, 1, 0, 0, 1);
+			soundpool.play(vec72_b4, 1, 1, 0, 0, 1);
+			break;
+		case 6:
+			soundpool.play(vec72_d5, 1, 1, 0, 0, 1);
+			break;
+		case 7:
+			soundpool.play(vec72_e5, 1, 1, 0, 0, 1);
+			break;
+		case 8:
+			soundpool.play(vec72_fsharp5, 1, 1, 0, 0, 1);
+			break;
+		case 9:
+			soundpool.play(vec72_a5, 1, 1, 0, 0, 1);
+			break;
+		case 10:
+			soundpool.play(vec72_b5, 1, 1, 0, 0, 1);
 			break;
 		default:
 			Log.d("PlaySound", "Redundant Key Pressed "
