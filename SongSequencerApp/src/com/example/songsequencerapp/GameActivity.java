@@ -30,7 +30,9 @@ import android.view.WindowManager;
 public class GameActivity extends Activity {
 	public static final String KEY_STRING = "KEY";
 	public static final String INSTRUMENT_STRING = "INSTRUMENT";
+	public static final int MESSAGE_LENGTH = 24;
 	public static boolean onTouch = false;
+	boolean keyPressed = false;
 	
 	//vec72 sounds
 	public int vec72_b3;
@@ -65,7 +67,11 @@ public class GameActivity extends Activity {
 	Timer tcp_timer;
 	BPMTimerTask bpmTask;
 	TCPReadTimerTask tcp_task;
-	boolean keyPressed = false;
+	
+	public int player0_instrument;
+	public int player0_key;
+	public boolean tcp_updated = false;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +82,8 @@ public class GameActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_game);
 
-		// Set up a timer task. We will use the timer to check the
-		// input queue every 500 ms
 		tcp_task = new TCPReadTimerTask();
 		tcp_timer = new Timer();
-		
-		// Set up a timer task. We will use the timer to check the
-		// input queue every 500 ms
 		bpmTask = new BPMTimerTask();
 		bpm_timer = new Timer();
 		
@@ -244,21 +245,24 @@ public class GameActivity extends Activity {
 						in.read(buf);
 
 						final String s = new String(buf, 0, bytes_avail,
-								"US-ASCII").substring(1, bytes_avail);
-						Log.d("MyMessage", "Received: " + s);
+								"US-ASCII").substring(bytes_avail - MESSAGE_LENGTH);
+						Log.d("MyRcvdMessage", "Received: " + s);
 						JSONObject json = new JSONObject(s);
 
-						Log.d("MyMessage",
+						Log.d("MyRcvdMessage",
 								"Instrument: "
 										+ json.getString(INSTRUMENT_STRING)
 										+ " Key: " + json.getString(KEY_STRING));
-						// PLAY SOUND HERE
+						
+						player0_instrument = json.getInt(INSTRUMENT_STRING);
+						player0_key = json.getInt(KEY_STRING);
+						tcp_updated = true;
 
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (JSONException e) {
-					Log.d("MyError", "String to JSON conversion error!");
+					Log.d("MyRcvdError", "String to JSON conversion error!");
 					e.printStackTrace();
 				}
 			}
@@ -276,14 +280,18 @@ public class GameActivity extends Activity {
 			else{
 				bassdrum_timer=1;
 			}
-			if (onTouch == true) {
-				playSound(GameView.touchPosition);
-				keyPressed = false;
+			if(tcp_updated == true){
+				playSound(player0_key);
+				tcp_updated = false;
 			}
-			else if (keyPressed == true){
-				playSound(GameView.touchPosition);
-				keyPressed = false;
-			}
+//			if (onTouch == true) {
+//				playSound(GameView.touchPosition);
+//				keyPressed = false;
+//			}
+//			else if (keyPressed == true){
+//				playSound(GameView.touchPosition);
+//				keyPressed = false;
+//			}
 		}
 	}
 
@@ -342,12 +350,12 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	public void playSoundFromMediaPlayer(MediaPlayer mediaPlayer) {
-		mediaPlayer.start();
-		// mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
-		// public void onCompletion(MediaPlayer mp) {
-		// mp.release();
-		// };
-		// });
-	}
+//	public void playSoundFromMediaPlayer(MediaPlayer mediaPlayer) {
+//		mediaPlayer.start();
+//		// mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+//		// public void onCompletion(MediaPlayer mp) {
+//		// mp.release();
+//		// };
+//		// });
+//	}
 }
