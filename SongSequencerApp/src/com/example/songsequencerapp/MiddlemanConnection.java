@@ -28,13 +28,6 @@ public class MiddlemanConnection extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// This call will result in better error messages if you
-		// try to do things in the wrong thread.
-
-		TCPReadTimerTask tcp_task = new TCPReadTimerTask();
-		Timer tcp_timer = new Timer();
-		tcp_timer.schedule(tcp_task, 0, 100);
-
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
 				.detectDiskReads().detectDiskWrites().detectNetwork()
 				.penaltyLog().build());
@@ -76,21 +69,9 @@ public class MiddlemanConnection extends Activity {
 					GameActivity.class);
 			startActivity(intent);
 		}
-//<<<<<<< HEAD
-
-		// open the socket. SocketConnect is a new subclass
-		// (defined below). This creates an instance of the subclass
-		// and executes the code in it.
-		//new SocketConnect().execute((Void) null);
-//=======
 		else{
-			// open the socket.  SocketConnect is a new subclass
-		    // (defined below).  This creates an instance of the subclass
-			// and executes the code in it.
 			new SocketConnect().execute((Void) null);
 		}
-		
-//>>>>>>> 1eaf8e813e408253ad14065f6e4d10b0898e2007
 	}
 
 	public void closeSocket(View view) {
@@ -205,7 +186,6 @@ public class MiddlemanConnection extends Activity {
 				connection_text = (EditText) findViewById(R.id.port);
 				editor.putString("port", connection_text.getText().toString());
 				editor.commit();
-				sendMessage(new String("yo"));
 
 				Intent intent = new Intent(MiddlemanConnection.this,
 						GameActivity.class);
@@ -230,63 +210,5 @@ public class MiddlemanConnection extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	public void sendMessage(String msg) {
-		MyApplication app = (MyApplication) getApplication();
-
-		// Create an array of bytes. First byte will be the
-		// message length, and the next ones will be the message
-		byte buf[] = new byte[msg.length() + 1];
-		buf[0] = (byte) msg.length();
-		System.arraycopy(msg.getBytes(), 0, buf, 1, msg.length());
-
-		// Now send through the output stream of the socket
-		OutputStream out;
-		try {
-			out = app.sock.getOutputStream();
-			try {
-				out.write(buf, 0, msg.length() + 1);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	// Used to receive message from the middleman/DE2
-	public class TCPReadTimerTask extends TimerTask {
-		public void run() {
-			MyApplication app = (MyApplication) getApplication();
-			if (app.sock != null && app.sock.isConnected()
-					&& !app.sock.isClosed()) {
-
-				try {
-					InputStream in = app.sock.getInputStream();
-
-					// See if any bytes are available from the Middleman
-					int bytes_avail = in.available();
-					if (bytes_avail > 0) {
-
-						// If so, read them in and create a sring
-						byte buf[] = new byte[bytes_avail];
-						in.read(buf);
-
-						final String s = new String(buf, 0, bytes_avail,
-								"US-ASCII");
-						if (s == "host") {
-							isHost = true;
-						}
-						Log.d("MyMessage", "Received: " + s);
-
-						// PLAY SOUND HERE
-
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
 	}
 }

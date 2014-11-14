@@ -28,9 +28,13 @@ import android.view.WindowManager;
 
 
 public class GameActivity extends Activity {
-	public static final String KEY_STRING = "KEY";
-	public static final String INSTRUMENT_STRING = "INSTRUMENT";
+	public static final String KEY_JSON = "KEY";
+	public static final String INSTRUMENT_JSON = "INSTRUMENT";
 	public static final int MESSAGE_LENGTH = 24;
+	public static final byte MESSAGE_HEADER_LENGTH = 3;
+	public static final byte MSG_TYPE_RESPONSE = 0;
+	public static final byte MSG_TYPE_BROADCAST = 1;
+	
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
 	
@@ -193,8 +197,8 @@ public class GameActivity extends Activity {
 		JSONObject json = new JSONObject();
 
 		try {
-			json.put(INSTRUMENT_STRING, instrument);
-			json.put(KEY_STRING, key);
+			json.put(INSTRUMENT_JSON, instrument);
+			json.put(KEY_JSON, key);
 		} catch (JSONException e) {
 			Log.d("MyError", "Error putting in JSON!");
 			e.printStackTrace();
@@ -204,20 +208,25 @@ public class GameActivity extends Activity {
 	}
 
 	public void sendMessage(String msg) {
+		//MESSAGE STRUCTURE:
+		//byte0: type of the message (response, brodcast, redirect)
+		//byte1: id of the sender
+		//byte2: id of the receiver (0xFF if broadcast)
+		//byte3...255: content of the message (string)
+		
 		MyApplication app = (MyApplication) getApplication();
+	
+		byte buf[] = new byte[msg.length() + MESSAGE_HEADER_LENGTH];
+		buf[0] = MSG_TYPE_BROADCAST;
+		buf[1] = 123;
+		buf[2] = 123;
+		System.arraycopy(msg.getBytes(), 0, buf, MESSAGE_HEADER_LENGTH, msg.length());
 
-		// Create an array of bytes. First byte will be the
-		// message length, and the next ones will be the message
-		byte buf[] = new byte[msg.length() + 1];
-		buf[0] = (byte) msg.length();
-		System.arraycopy(msg.getBytes(), 0, buf, 1, msg.length());
-
-		// Now send through the output stream of the socket
 		OutputStream out;
 		try {
 			out = app.sock.getOutputStream();
 			try {
-				out.write(buf, 0, msg.length() + 1);
+				out.write(buf, 0, msg.length() + MESSAGE_HEADER_LENGTH);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -251,13 +260,12 @@ public class GameActivity extends Activity {
 
 						Log.d("MyRcvdMessage",
 								"Instrument: "
-										+ json.getString(INSTRUMENT_STRING)
-										+ " Key: " + json.getString(KEY_STRING));
+										+ json.getString(INSTRUMENT_JSON)
+										+ " Key: " + json.getString(KEY_JSON));
 						
-						player0_instrument = json.getInt(INSTRUMENT_STRING);
-						player0_key = json.getInt(KEY_STRING);
+						player0_instrument = json.getInt(INSTRUMENT_JSON);
+						player0_key = json.getInt(KEY_JSON);
 						tcp_updated = true;
-
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
