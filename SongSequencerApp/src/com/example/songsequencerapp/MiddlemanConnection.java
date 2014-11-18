@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 public class MiddlemanConnection extends Activity {
 	protected boolean isHost;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -154,10 +155,8 @@ public class MiddlemanConnection extends Activity {
 				s.bind(null);
 				s.connect((new InetSocketAddress(ip, port)), 1000);
 			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return s;
