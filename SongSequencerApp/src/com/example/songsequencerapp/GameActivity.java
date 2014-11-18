@@ -31,6 +31,19 @@ import com.example.songsequencerapp.Vec72;
 public class GameActivity extends Activity {
 	public static final String KEY_STRING = "KEY";
 	public static final String INSTRUMENT_STRING = "INSTRUMENT";
+	public static final int KEY_OF_GSHARP = 0;
+	public static final int KEY_OF_A = 1;
+	public static final int KEY_OF_ASHARP = 2;
+	public static final int KEY_OF_B = 3;
+	public static final int KEY_OF_C = 4;
+	public static final int KEY_OF_CSHARP = 5;
+	public static final int KEY_OF_D = 6;
+	public static final int KEY_OF_DSHARP = 7;
+	public static final int KEY_OF_E = 8;
+	public static final int KEY_OF_F = 9;
+	public static final int KEY_OF_FSHARP = 10;
+	public static final int KEY_OF_G = 11;
+	
 	public static boolean onTouch = false;
 	
 	public Vec72 vec72;
@@ -60,7 +73,7 @@ public class GameActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		vec72 = new Vec72();
+		vec72 = new Vec72(GameActivity.KEY_OF_CSHARP);
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
