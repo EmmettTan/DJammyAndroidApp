@@ -274,7 +274,12 @@ public class MiddlemanConnection extends Activity {
 
 						final String s = new String(buf, 0, bytes_avail,
 								"US-ASCII");
-						if (s == "host") {
+						
+						int id = (int) buf[0];
+						Toast h = Toast.makeText(getApplicationContext(), id,
+								Toast.LENGTH_LONG);
+						h.show();
+						if (id == 1) {
 							isHost = true;
 						}
 						Log.d("MyMessage", "Received: " + s);
