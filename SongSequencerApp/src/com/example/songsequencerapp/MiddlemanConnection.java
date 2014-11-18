@@ -211,4 +211,67 @@ public class MiddlemanConnection extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+	public void sendMessage(String msg) {
+		MyApplication app = (MyApplication) getApplication();
+
+		// Create an array of bytes. First byte will be the
+		// message length, and the next ones will be the message
+		byte buf[] = new byte[msg.length() + 1];
+		buf[0] = (byte) msg.length();
+		System.arraycopy(msg.getBytes(), 0, buf, 1, msg.length());
+
+		// Now send through the output stream of the socket
+		OutputStream out;
+		try {
+			out = app.sock.getOutputStream();
+			try {
+				out.write(buf, 0, msg.length() + 1);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	// Used to receive message from the middleman/DE2
+	public class TCPReadTimerTask extends TimerTask {
+		public void run() {
+			MyApplication app = (MyApplication) getApplication();
+			if (app.sock != null && app.sock.isConnected()
+					&& !app.sock.isClosed()) {
+
+				try {
+					InputStream in = app.sock.getInputStream();
+
+					// See if any bytes are available from the Middleman
+					int bytes_avail = in.available();
+					if (bytes_avail > 0) {
+
+						// If so, read them in and create a sring
+						byte buf[] = new byte[bytes_avail];
+						in.read(buf);
+
+						final String s = new String(buf, 0, bytes_avail,
+								"US-ASCII");
+						
+						int id = (int) buf[0];
+						Toast h = Toast.makeText(getApplicationContext(), id,
+								Toast.LENGTH_LONG);
+						h.show();
+						if (id == 1) {
+							isHost = true;
+						}
+						Log.d("MyMessage", "Received: " + s);
+
+						// PLAY SOUND HERE
+
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }
