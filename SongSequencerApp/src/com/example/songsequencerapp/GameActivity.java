@@ -67,9 +67,13 @@ public class GameActivity extends Activity {
 	SoundPool soundpool;
 	Timer bpm_timer;
 	Timer tcp_timer;
+	Timer sendmsg_timer;
+	SendMsgTimerTask sendmsg_task;
 	BPMTimerTask bpmTask;
 	TCPReadTimerTask tcp_task;
 	
+	public int my_instrument = 0;
+	public int my_key;
 	public int player0_instrument;
 	public int player0_key;
 	public boolean tcp_updated = false;
@@ -90,6 +94,8 @@ public class GameActivity extends Activity {
 		tcp_timer = new Timer();
 		bpmTask = new BPMTimerTask();
 		bpm_timer = new Timer();
+		sendmsg_timer = new Timer();
+		sendmsg_task = new SendMsgTimerTask();
 		
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		//First Octave
@@ -118,6 +124,7 @@ public class GameActivity extends Activity {
 		super.onResume();
 		bpm_timer.schedule(bpmTask, 210, 210);
 		tcp_timer.schedule(tcp_task, 100, 100);
+		sendmsg_timer.schedule(sendmsg_task, 50, 100);
 	}
 	
 	@Override
@@ -125,6 +132,7 @@ public class GameActivity extends Activity {
 		super.onPause();
 		bpmTask.cancel();
 		tcp_task.cancel();
+		sendmsg_task.cancel();
 	}
 
 	@Override
@@ -160,14 +168,14 @@ public class GameActivity extends Activity {
 			keyPressed = true;
 			GameView.touchPosition = key_position;
 			game_view.invalidate();
-			sendMessage(composeMessage(0, key_position));
+			my_key = key_position;
 			Log.d("MyApp", "Action was DOWN: " + GameView.touchPosition);
 			return true;
 
 		case (MotionEvent.ACTION_MOVE):
 			GameView.touchPosition = key_position;
 			game_view.invalidate();
-			sendMessage(composeMessage(0, key_position));
+			my_key = key_position;
 			Log.d("MyApp", "Action was MOVE: " + getKeyPosition(y));
 			return true;
 
@@ -282,12 +290,17 @@ public class GameActivity extends Activity {
 //			}
 		}
 	}
-
+	
+	public class SendMsgTimerTask extends TimerTask {
+		public void run() {
+			if(onTouch == true){
+				sendMessage(composeMessage(my_instrument, my_key));
+			}
+		}
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
