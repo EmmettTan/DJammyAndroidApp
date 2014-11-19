@@ -29,13 +29,6 @@ public class MiddlemanConnection extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// This call will result in better error messages if you
-		// try to do things in the wrong thread.
-
-		TCPReadTimerTask tcp_task = new TCPReadTimerTask();
-		Timer tcp_timer = new Timer();
-		tcp_timer.schedule(tcp_task, 0, 100);
-
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
 				.detectDiskReads().detectDiskWrites().detectNetwork()
 				.penaltyLog().build());
@@ -77,21 +70,9 @@ public class MiddlemanConnection extends Activity {
 					GameActivity.class);
 			startActivity(intent);
 		}
-//<<<<<<< HEAD
-
-		// open the socket. SocketConnect is a new subclass
-		// (defined below). This creates an instance of the subclass
-		// and executes the code in it.
-		//new SocketConnect().execute((Void) null);
-//=======
 		else{
-			// open the socket.  SocketConnect is a new subclass
-		    // (defined below).  This creates an instance of the subclass
-			// and executes the code in it.
 			new SocketConnect().execute((Void) null);
 		}
-		
-//>>>>>>> 1eaf8e813e408253ad14065f6e4d10b0898e2007
 	}
 
 	public void closeSocket(View view) {
@@ -204,7 +185,6 @@ public class MiddlemanConnection extends Activity {
 				connection_text = (EditText) findViewById(R.id.port);
 				editor.putString("port", connection_text.getText().toString());
 				editor.commit();
-				sendMessage(new String("yo"));
 
 				Intent intent = new Intent(MiddlemanConnection.this,
 						GameActivity.class);

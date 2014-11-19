@@ -13,7 +13,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,13 +23,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import com.example.songsequencerapp.Vec72;
 
 
 
 public class GameActivity extends Activity {
-	public static final String KEY_STRING = "KEY";
-	public static final String INSTRUMENT_STRING = "INSTRUMENT";
+
+	public static final String KEY_JSON = "KEY";
+	public static final String INSTRUMENT_JSON = "INS";
+	public final byte MSG_TYPE_BROADCAST_KEYS = 1;
+	
 	public static final int KEY_OF_GSHARP = 0;
 	public static final int KEY_OF_A = 1;
 	public static final int KEY_OF_ASHARP = 2;
@@ -45,6 +46,7 @@ public class GameActivity extends Activity {
 	public static final int KEY_OF_G = 11;
 	
 	public static boolean onTouch = false;
+	boolean keyPressed = false;
 	
 	public Vec72 vec72;
 	//vec216 sounds
@@ -65,9 +67,17 @@ public class GameActivity extends Activity {
 	SoundPool soundpool;
 	Timer bpm_timer;
 	Timer tcp_timer;
+	Timer sendmsg_timer;
+	SendMsgTimerTask sendmsg_task;
 	BPMTimerTask bpmTask;
 	TCPReadTimerTask tcp_task;
-	boolean keyPressed = false;
+	
+	public int my_instrument = 0;
+	public int my_key;
+	public int player0_instrument;
+	public int player0_key;
+	public boolean tcp_updated = false;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,15 +90,12 @@ public class GameActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_game);
 
-		// Set up a timer task. We will use the timer to check the
-		// input queue every 500 ms
 		tcp_task = new TCPReadTimerTask();
 		tcp_timer = new Timer();
-		
-		// Set up a timer task. We will use the timer to check the
-		// input queue every 500 ms
 		bpmTask = new BPMTimerTask();
 		bpm_timer = new Timer();
+		sendmsg_timer = new Timer();
+		sendmsg_task = new SendMsgTimerTask();
 		
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		//First Octave
@@ -117,6 +124,7 @@ public class GameActivity extends Activity {
 		super.onResume();
 		bpm_timer.schedule(bpmTask, 210, 210);
 		tcp_timer.schedule(tcp_task, 100, 100);
+		sendmsg_timer.schedule(sendmsg_task, 50, 100);
 	}
 	
 	@Override
@@ -124,6 +132,7 @@ public class GameActivity extends Activity {
 		super.onPause();
 		bpmTask.cancel();
 		tcp_task.cancel();
+		sendmsg_task.cancel();
 	}
 
 	@Override
@@ -159,14 +168,14 @@ public class GameActivity extends Activity {
 			keyPressed = true;
 			GameView.touchPosition = key_position;
 			game_view.invalidate();
-			sendMessage(composeMessage(0, key_position));
+			my_key = key_position;
 			Log.d("MyApp", "Action was DOWN: " + GameView.touchPosition);
 			return true;
 
 		case (MotionEvent.ACTION_MOVE):
 			GameView.touchPosition = key_position;
 			game_view.invalidate();
-			sendMessage(composeMessage(0, key_position));
+			my_key = key_position;
 			Log.d("MyApp", "Action was MOVE: " + getKeyPosition(y));
 			return true;
 
@@ -186,8 +195,8 @@ public class GameActivity extends Activity {
 		JSONObject json = new JSONObject();
 
 		try {
-			json.put(INSTRUMENT_STRING, instrument);
-			json.put(KEY_STRING, key);
+			json.put(INSTRUMENT_JSON, instrument);
+			json.put(KEY_JSON, key);
 		} catch (JSONException e) {
 			Log.d("MyError", "Error putting in JSON!");
 			e.printStackTrace();
@@ -198,19 +207,18 @@ public class GameActivity extends Activity {
 
 	public void sendMessage(String msg) {
 		MyApplication app = (MyApplication) getApplication();
-
-		// Create an array of bytes. First byte will be the
-		// message length, and the next ones will be the message
+	
 		byte buf[] = new byte[msg.length() + 1];
-		buf[0] = (byte) msg.length();
+		buf[0] = MSG_TYPE_BROADCAST_KEYS;
+		
 		System.arraycopy(msg.getBytes(), 0, buf, 1, msg.length());
 
-		// Now send through the output stream of the socket
 		OutputStream out;
 		try {
 			out = app.sock.getOutputStream();
 			try {
 				out.write(buf, 0, msg.length() + 1);
+				out.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -237,22 +245,20 @@ public class GameActivity extends Activity {
 						byte buf[] = new byte[bytes_avail];
 						in.read(buf);
 
-						final String s = new String(buf, 0, bytes_avail,
-								"US-ASCII").substring(1, bytes_avail);
-						Log.d("MyMessage", "Received: " + s);
+						final String s = new String(buf, 1, bytes_avail-1, "US-ASCII");
+						Log.d("MyRcvdMessage", "Received: " + s);
 						JSONObject json = new JSONObject(s);
 
-						Log.d("MyMessage",
-								"Instrument: "
-										+ json.getString(INSTRUMENT_STRING)
-										+ " Key: " + json.getString(KEY_STRING));
-						// PLAY SOUND HERE
-
+						Log.d("MyRcvdMessage", "Instrument: " + json.getString(INSTRUMENT_JSON) + " Key: " + json.getString(KEY_JSON));
+						
+						player0_instrument = json.getInt(INSTRUMENT_JSON);
+						player0_key = json.getInt(KEY_JSON);
+						tcp_updated = true;
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (JSONException e) {
-					Log.d("MyError", "String to JSON conversion error!");
+					Log.d("MyRcvdError", "String to JSON conversion error!");
 					e.printStackTrace();
 				}
 			}
@@ -270,22 +276,31 @@ public class GameActivity extends Activity {
 			else{
 				bassdrum_timer=1;
 			}
-			if (onTouch == true) {
-				playSound(GameView.touchPosition);
-				keyPressed = false;
+			if(tcp_updated == true){
+				playSound(player0_key);
+				tcp_updated = false;
 			}
-			else if (keyPressed == true){
-				playSound(GameView.touchPosition);
-				keyPressed = false;
+//			if (onTouch == true) {
+//				playSound(GameView.touchPosition);
+//				keyPressed = false;
+//			}
+//			else if (keyPressed == true){
+//				playSound(GameView.touchPosition);
+//				keyPressed = false;
+//			}
+		}
+	}
+	
+	public class SendMsgTimerTask extends TimerTask {
+		public void run() {
+			if(onTouch == true){
+				sendMessage(composeMessage(my_instrument, my_key));
 			}
 		}
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
