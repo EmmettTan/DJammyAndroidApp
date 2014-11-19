@@ -5,17 +5,19 @@
 
 #include <assert.h>
 
-#define MSG_LENGTH 100
+#define MSG_LENGTH 256
+#define MSG_TYPE_BROADCAST_KEYS 1
 
 void usb_initialization();
 struct packet receive_message(unsigned char *message, struct packet packet);
 void send_message(unsigned char *message, struct packet packet);
 void clean_message(unsigned char *message);
-//void check_host(int id);
+void broadcast_keys(unsigned char *message, struct packet packet);
 
 struct packet{
-	char id;
-	char msgsize;
+	unsigned char id;
+	unsigned char msgsize;
+	unsigned char type;
 };
 
 int main() {
@@ -25,7 +27,14 @@ int main() {
 
 	while (1) {
 		packet = receive_message(message, packet);
-		send_message(message, packet);
+		switch(packet.type){
+			case MSG_TYPE_BROADCAST_KEYS:
+				broadcast_keys(message, packet); // broadcast keys
+				break;
+			default:
+				printf("MESSAGE TYPE NOT RECOGNIZED!");
+				break;
+		}
 		clean_message(message);
 	}
 
@@ -56,7 +65,9 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 	int total_recvd;
 	unsigned char id;
 	unsigned char msgdata;
+	unsigned char msg_type;
 
+	// 1st byte is the client id
 	bytes_expected = 1;
 	total_recvd = 0;
 	while (total_recvd < bytes_expected) {
@@ -64,10 +75,10 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 		if (bytes_recvd > 0)
 			total_recvd += bytes_recvd;
 	}
-
 	printf("Client ID: %d\t", id);
 	packet.id = id;
 
+	// 2nd byte is the message size
 	total_recvd = 0;
 	while (total_recvd < bytes_expected) {
 		bytes_recvd = usb_device_recv(&msgdata, 1);
@@ -78,7 +89,18 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 	printf("Message size: %d\t", msgsize);
 	packet.msgsize = msgsize;
 
-	bytes_expected = msgsize;
+	// 3rd byte is the message type (sent from the android)
+	total_recvd = 0;
+	while (total_recvd < bytes_expected) {
+		bytes_recvd = usb_device_recv(&msg_type, 1);
+		if (bytes_recvd > 0)
+			total_recvd += bytes_recvd;
+	}
+	printf("Message type: %d\t", msg_type);
+	packet.type = msg_type;
+
+	// Reads the rest of the message
+	bytes_expected = msgsize -1; // Considering the msgsize contains the message type
 	total_recvd = 0;
 	while (total_recvd < bytes_expected) {
 		bytes_recvd = usb_device_recv(message + total_recvd, 1);
@@ -95,24 +117,21 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 	return packet;
 }
 
+void broadcast_keys(unsigned char *message, struct packet packet){
+	packet.id = 255;
+	send_message(message, packet);
+}
+
 void send_message(unsigned char *message, struct packet packet) {
 	int i;
-	char clientmsg[100];
+	unsigned char clientmsg[MSG_LENGTH];
 	clientmsg[0] = packet.id;
 	clientmsg[1] = packet.msgsize;
-	/*clientmsg[0] = packet.id;
-	clientmsg[1] = packet.msgsize;*/
-	memcpy(&clientmsg[2], message, packet.msgsize);
-//	strncpy(clientmsg, message);
-	//strcat(clientmsg, "\0");
-
-//	int size = (int) packet.msgsize + 2;
-	printf("Sending the message to the Middleman\n");
-	// Start with the number of bytes in our message
+	clientmsg[2] = packet.type;
+	memcpy(&clientmsg[3], message, packet.msgsize); // Considering the msgsize contains the message type
 	unsigned int message_length = packet.msgsize + 2;
-	//usb_device_send(&message_length, 1);
 
-	// Now send the actual message to the Middleman
+	printf("Sending the message to the Middleman\n");
 	usb_device_send(clientmsg, message_length);
 	printf("Message Echo Complete: \n");
 	for (i = 0; i < message_length; i++) {
@@ -120,13 +139,6 @@ void send_message(unsigned char *message, struct packet packet) {
 	}
 	printf("\n");
 }
-
-/*void check_host(int id) {
-	unsigned char host[] = "host";
-	if (id == 1) {
-		send_message(host);
-	}
-}*/
 
 void clean_message(unsigned char *message) {
 	int i;
