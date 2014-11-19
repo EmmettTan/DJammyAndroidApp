@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,6 +17,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,8 +55,8 @@ public class GameActivity extends Activity {
 	
 	public int my_instrument = 0;
 	public int my_key;
-	Map <Integer, Integer> tcp_instruments; //<client, instrument>
-	Map <Integer, Integer> tcp_keys; //<client, instrument>
+	SparseIntArray tcp_instruments; //<client, instrument>
+	SparseIntArray tcp_keys; //<client, instrument>
 	public boolean tcp_updated = false;
 	
 
@@ -85,8 +85,8 @@ public class GameActivity extends Activity {
 		sendmsg_timer = new Timer();
 		sendmsg_task = new SendMsgTimerTask();
 		
-		tcp_instruments = new HashMap<Integer,Integer>();
-		tcp_keys = new HashMap<Integer,Integer>();
+		tcp_instruments = new SparseIntArray();
+		tcp_keys = new SparseIntArray();
 		
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		
@@ -260,8 +260,8 @@ public class GameActivity extends Activity {
 				bassdrum_timer=1;
 			}
 			if(tcp_updated == true){
-				for (Integer key : tcp_keys.values()) {
-					playSound(key);
+				for(int i = 0; i < tcp_keys.size(); i++) {
+					playSound(tcp_keys.valueAt(i));
 				}
 				tcp_keys.clear();
 				tcp_instruments.clear();
