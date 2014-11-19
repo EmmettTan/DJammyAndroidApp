@@ -39,7 +39,7 @@ public abstract class Instrument {
 		
 	}
 
-	private void initialize_scale_array(int i) {
+	public void initialize_scale_array(int i) {
 		note_ID[0] = full_note_list[i];
 		note_ID[1] = full_note_list[i + 3];
 		note_ID[2] = full_note_list[i + 5];
