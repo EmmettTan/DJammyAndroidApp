@@ -205,19 +205,20 @@ public class GameActivity extends Activity {
 		return json.toString();
 	}
 
-	public void sendMessage(String msg) {
+	public void sendMessage(String msg) { // BROADCAST MODE!
 		MyApplication app = (MyApplication) getApplication();
 	
-		byte buf[] = new byte[msg.length() + 1];
+		byte buf[] = new byte[msg.length() + 2];
 		buf[0] = MSG_TYPE_BROADCAST_KEYS;
+		buf[1] = 0; //Allocate space for the client id
 		
-		System.arraycopy(msg.getBytes(), 0, buf, 1, msg.length());
+		System.arraycopy(msg.getBytes(), 0, buf, 2, msg.length());
 
 		OutputStream out;
 		try {
 			out = app.sock.getOutputStream();
 			try {
-				out.write(buf, 0, msg.length() + 1);
+				out.write(buf, 0, msg.length() + 2);
 				out.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -227,7 +228,7 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	// Used to receive message from the middleman/DE2
+	// Used to receive message from the middleman/DE2 BROADCAST MODE!
 	public class TCPReadTimerTask extends TimerTask {
 		public void run() {
 			MyApplication app = (MyApplication) getApplication();
@@ -244,9 +245,10 @@ public class GameActivity extends Activity {
 						// If so, read them in and create a sring
 						byte buf[] = new byte[bytes_avail];
 						in.read(buf);
+						int client_id = buf[1];
 
-						final String s = new String(buf, 1, bytes_avail-1, "US-ASCII");
-						Log.d("MyRcvdMessage", "Received: " + s);
+						final String s = new String(buf, 2, bytes_avail-2, "US-ASCII");
+						Log.d("MyRcvdMessage", "Client:" + client_id + " Received: " + s);
 						JSONObject json = new JSONObject(s);
 
 						Log.d("MyRcvdMessage", "Instrument: " + json.getString(INSTRUMENT_JSON) + " Key: " + json.getString(KEY_JSON));

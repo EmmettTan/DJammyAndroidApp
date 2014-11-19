@@ -118,7 +118,8 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 }
 
 void broadcast_keys(unsigned char *message, struct packet packet){
-	packet.id = 255;
+	message[0] = packet.id; // Puts the client id in the first byte of the message (for the android)
+	packet.id = 255; // sets id of the client to 0xFF that means broadcast to middleman
 	send_message(message, packet);
 }
 
