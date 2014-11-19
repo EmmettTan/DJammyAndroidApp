@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="planets_array">
+        <item>G#/Ab</item>
+        <item>A</item>
+        <item>A#/Bb</item>
+        <item>B</item>
+        <item>C</item>
+        <item>C#/Db</item>
+        <item>D</item>
+        <item>D#/Eb</item>
+        <item>E</item>
+        <item>F</item>
+        <item>F#/Gb</item>
+		<item>G</item>
+    </string-array>
+
     <string name="app_name">SongSequencerApp</string>
     <string name="hello_world">Game here!</string>
     <string name="action_settings">Settings</string>
@@ -10,5 +25,14 @@
     <string name="label_port">Port:</string>
     <string name="connect">Connect</string>
     <string name="title_activity_game">GameActivity</string>
+    <string name="Setting">Settings</string>
+    <string name="ChooseTune">Choose Your Tune:</string>
+    <string name="Synth1">Red</string>
+    <string name="Synth2">Blue</string>
+    <string name="Synth3">Green</string>
+    <string name="Synth4">Yellow</string>
+    <string name="ChooseKey">Choose Key:</string>
+    <string name="title_activity_settings_menu">SettingsMenu</string>
+    <string name="Done">Done</string>
 
 </resources>

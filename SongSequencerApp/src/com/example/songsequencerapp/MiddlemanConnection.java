@@ -67,7 +67,7 @@ public class MiddlemanConnection extends Activity {
 		if (app.sock != null && app.sock.isConnected() && !app.sock.isClosed()) {
 			msgbox.setText("Socket already open");
 			Intent intent = new Intent(MiddlemanConnection.this,
-					GameActivity.class);
+					SettingsMenu.class);
 			startActivity(intent);
 		}
 		else{
@@ -94,7 +94,7 @@ public class MiddlemanConnection extends Activity {
 		Toast t = Toast.makeText(getApplicationContext(),
 				"Skipping... Not connected", Toast.LENGTH_LONG);
 		t.show();
-		Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
+		Intent intent = new Intent(MiddlemanConnection.this, SettingsMenu.class);
 		startActivity(intent);
 	}
 
@@ -187,7 +187,7 @@ public class MiddlemanConnection extends Activity {
 				editor.commit();
 
 				Intent intent = new Intent(MiddlemanConnection.this,
-						GameActivity.class);
+						SettingsMenu.class);
 				startActivity(intent);
 
 			} else {
