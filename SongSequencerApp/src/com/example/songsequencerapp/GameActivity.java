@@ -3,6 +3,8 @@ package com.example.songsequencerapp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -53,15 +55,14 @@ public class GameActivity extends Activity {
 	
 	public int my_instrument = 0;
 	public int my_key;
-	public int player0_instrument;
-	public int player0_key;
+	Map <Integer, Integer> tcp_instruments; //<client, instrument>
+	Map <Integer, Integer> tcp_keys; //<client, instrument>
 	public boolean tcp_updated = false;
 	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		
 		vec72 = new Vec72();
 		vec72.init(Vec72.KEY_OF_GSHARP);
@@ -71,8 +72,6 @@ public class GameActivity extends Activity {
 		
 		bass = new Bass();
 		bass.init(Bass.KEY_OF_B);
-		
-		
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -86,12 +85,14 @@ public class GameActivity extends Activity {
 		sendmsg_timer = new Timer();
 		sendmsg_task = new SendMsgTimerTask();
 		
+		tcp_instruments = new HashMap<Integer,Integer>();
+		tcp_keys = new HashMap<Integer,Integer>();
+		
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		
 		vec72.load(soundpool, getApplicationContext(), 0);
 		vec216.load(soundpool, getApplicationContext(), 0);
 		bass.load(soundpool, getApplicationContext(), 0);
-		
 		
 		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
 	}
@@ -230,13 +231,16 @@ public class GameActivity extends Activity {
 
 						Log.d("MyRcvdMessage", "Instrument: " + json.getString(INSTRUMENT_JSON) + " Key: " + json.getString(KEY_JSON));
 						
-						player0_instrument = json.getInt(INSTRUMENT_JSON);
-						player0_key = json.getInt(KEY_JSON);
+						tcp_instruments.put(client_id, json.getInt(INSTRUMENT_JSON));
+						tcp_keys.put(client_id, json.getInt(KEY_JSON));
 						tcp_updated = true;
+						
 					}
-				} catch (IOException e) {
+				} 
+				catch (IOException e) {
 					e.printStackTrace();
-				} catch (JSONException e) {
+				} 
+				catch (JSONException e) {
 					Log.d("MyRcvdError", "String to JSON conversion error!");
 					e.printStackTrace();
 				}
@@ -256,17 +260,21 @@ public class GameActivity extends Activity {
 				bassdrum_timer=1;
 			}
 			if(tcp_updated == true){
-				playSound(player0_key);
+				for (Integer key : tcp_keys.values()) {
+					playSound(key);
+				}
+				tcp_keys.clear();
+				tcp_instruments.clear();
 				tcp_updated = false;
 			}
-			if (onTouch == true) {
-				playSound(GameView.touchPosition);
-				keyPressed = false;
-			}
-			else if (keyPressed == true){
-				playSound(GameView.touchPosition);
-				keyPressed = false;
-			}
+//			if (onTouch == true) {
+//				playSound(GameView.touchPosition);
+//				keyPressed = false;
+//			}
+//			else if (keyPressed == true){
+//				playSound(GameView.touchPosition);
+//				keyPressed = false;
+//			}
 		}
 	}
 	
