@@ -4,6 +4,21 @@ import android.content.Context;
 import android.media.SoundPool;
 
 public abstract class Instrument {
+	
+	//Keys
+	public static int KEY_OF_GSHARP;
+	public static int KEY_OF_A;
+	public static int KEY_OF_ASHARP;
+	public static int KEY_OF_B;
+	public static int KEY_OF_C;
+	public static int KEY_OF_CSHARP;
+	public static int KEY_OF_D;
+	public static int KEY_OF_DSHARP;
+	public static int KEY_OF_E;
+	public static int KEY_OF_F;
+	public static int KEY_OF_FSHARP;
+	public static int KEY_OF_G;
+	
 	// vec72 sounds
 	public int note[] = new int[11];
 	public int note_ID[] = new int[11];
@@ -12,10 +27,12 @@ public abstract class Instrument {
 	// The key of the instrument, ie, what pentatonic scale we are playing in
 	public int instrument_key_index;
 
-	public Instrument(int key) {
-		this.instrument_key_index = key;
+	public Instrument() {
+	}
+	
+	public void init(int key){
 		initialize_full_note_list();
-		initialize_scale_array(instrument_key_index);
+		initialize_scale_array(key);
 	}
 
 	public void initialize_full_note_list() {

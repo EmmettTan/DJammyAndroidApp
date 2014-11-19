@@ -2,8 +2,21 @@ package com.example.songsequencerapp;
 
 public class Vec72 extends Instrument {
 
-	public Vec72(int key) {
-		super(key);
+	public Vec72() {
+		super();
+		//Keys
+		KEY_OF_GSHARP = 0;
+		KEY_OF_A = 1;
+		KEY_OF_ASHARP = 2;
+		KEY_OF_B = 3;
+		KEY_OF_C = 4;
+		KEY_OF_CSHARP = 5;
+		KEY_OF_D = 6;
+		KEY_OF_DSHARP = 7;
+		KEY_OF_E = 8;
+		KEY_OF_F = 9;
+		KEY_OF_FSHARP = 10;
+		KEY_OF_G = 11;
 	}
 
 	@Override

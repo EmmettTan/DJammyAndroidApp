@@ -31,36 +31,13 @@ public class GameActivity extends Activity {
 	public static final String KEY_JSON = "KEY";
 	public static final String INSTRUMENT_JSON = "INS";
 	public final byte MSG_TYPE_BROADCAST_KEYS = 1;
-	
-	public static final int KEY_OF_GSHARP = 0;
-	public static final int KEY_OF_A = 1;
-	public static final int KEY_OF_ASHARP = 2;
-	public static final int KEY_OF_B = 3;
-	public static final int KEY_OF_C = 4;
-	public static final int KEY_OF_CSHARP = 5;
-	public static final int KEY_OF_D = 6;
-	public static final int KEY_OF_DSHARP = 7;
-	public static final int KEY_OF_E = 8;
-	public static final int KEY_OF_F = 9;
-	public static final int KEY_OF_FSHARP = 10;
-	public static final int KEY_OF_G = 11;
-	
+		
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
 	
 	public Vec72 vec72;
-	//vec216 sounds
-	public int vec216_b3;
-	public int vec216_d4;
-	public int vec216_e4;
-	public int vec216_fsharp4;
-	public int vec216_a4;
-	public int vec216_b4;
-	public int vec216_d5;
-	public int vec216_e5;
-	public int vec216_fsharp5;
-	public int vec216_a5;
-	public int vec216_b5;
+	
+	public Vec216 vec216;
 	
 	public int bassdrum;
 	public int bassdrum_timer=0;
@@ -83,7 +60,14 @@ public class GameActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		vec72 = new Vec72(GameActivity.KEY_OF_CSHARP);
+		
+		vec72 = new Vec72();
+		vec72.init(Vec72.KEY_OF_B);
+		
+		vec216 = new Vec216();
+		vec216.init(Vec216.KEY_OF_B);
+		
+		
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -98,22 +82,9 @@ public class GameActivity extends Activity {
 		sendmsg_task = new SendMsgTimerTask();
 		
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-		//First Octave
-		vec216_b3 = soundpool.load(getApplicationContext(), R.raw.vec216_b3, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_d4 = soundpool.load(getApplicationContext(), R.raw.vec216_d4, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_e4 = soundpool.load(getApplicationContext(), R.raw.vec216_e4, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_fsharp4 = soundpool.load(getApplicationContext(), R.raw.vec216_fsharp4, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_a4 = soundpool.load(getApplicationContext(), R.raw.vec216_a4, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_b4 = soundpool.load(getApplicationContext(), R.raw.vec216_b4, 1); // in 2nd param u have to pass your desire ringtone
-		//Second Octave
-		vec216_d5 = soundpool.load(getApplicationContext(), R.raw.vec216_d5, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_e5 = soundpool.load(getApplicationContext(), R.raw.vec216_e5, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_fsharp5 = soundpool.load(getApplicationContext(), R.raw.vec216_fsharp5, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_a5 = soundpool.load(getApplicationContext(), R.raw.vec216_a5, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_b5 = soundpool.load(getApplicationContext(), R.raw.vec216_b5, 1); // in 2nd param u have to pass your desire ringtone
-	
 		
 		vec72.load(soundpool, getApplicationContext(), 0);
+		vec216.load(soundpool, getApplicationContext(), 0);
 		
 		
 		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
@@ -280,14 +251,14 @@ public class GameActivity extends Activity {
 				playSound(player0_key);
 				tcp_updated = false;
 			}
-//			if (onTouch == true) {
-//				playSound(GameView.touchPosition);
-//				keyPressed = false;
-//			}
-//			else if (keyPressed == true){
-//				playSound(GameView.touchPosition);
-//				keyPressed = false;
-//			}
+			if (onTouch == true) {
+				playSound(GameView.touchPosition);
+				keyPressed = false;
+			}
+			else if (keyPressed == true){
+				playSound(GameView.touchPosition);
+				keyPressed = false;
+			}
 		}
 	}
 	
@@ -312,37 +283,37 @@ public class GameActivity extends Activity {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
 		switch (touchPosition) {
 		case 0:
-			soundpool.play(vec72.note[10], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[10], 1, 1, 0, 0, 1);
 			break;
 		case 1:
-			soundpool.play(vec72.note[9], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[9], 1, 1, 0, 0, 1);
 			break;
 		case 2:
-			soundpool.play(vec72.note[8], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[8], 1, 1, 0, 0, 1);
 			break;
 		case 3:
-			soundpool.play(vec72.note[7], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[7], 1, 1, 0, 0, 1);
 			break;
 		case 4:
-			soundpool.play(vec72.note[6], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[6], 1, 1, 0, 0, 1);
 			break;
 		case 5:
-			soundpool.play(vec72.note[5], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[5], 1, 1, 0, 0, 1);
 			break;
 		case 6:
-			soundpool.play(vec72.note[4], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[4], 1, 1, 0, 0, 1);
 			break;
 		case 7:
-			soundpool.play(vec72.note[3], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[3], 1, 1, 0, 0, 1);
 			break;
 		case 8:
-			soundpool.play(vec72.note[2], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[2], 1, 1, 0, 0, 1);
 			break;
 		case 9:
-			soundpool.play(vec72.note[1], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[1], 1, 1, 0, 0, 1);
 			break;
 		case 10:
-			soundpool.play(vec72.note[0], 1, 1, 0, 0, 1);
+			soundpool.play(vec216.note[0], 1, 1, 0, 0, 1);
 			break;
 		default:
 			Log.d("PlaySound", "Redundant Key Pressed "
