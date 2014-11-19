@@ -13,7 +13,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Point;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,17 +23,27 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import com.example.songsequencerapp.Vec72;
 
 
 
 public class GameActivity extends Activity {
+
 	public static final String KEY_JSON = "KEY";
-	public static final String INSTRUMENT_JSON = "INSTRUMENT";
-	public static final int MESSAGE_LENGTH = 24;
-	public static final byte MESSAGE_HEADER_LENGTH = 3;
-	public static final byte MSG_TYPE_RESPONSE = 0;
-	public static final byte MSG_TYPE_BROADCAST = 1;
+	public static final String INSTRUMENT_JSON = "INS";
+	public final byte MSG_TYPE_BROADCAST_KEYS = 1;
+	
+	public static final int KEY_OF_GSHARP = 0;
+	public static final int KEY_OF_A = 1;
+	public static final int KEY_OF_ASHARP = 2;
+	public static final int KEY_OF_B = 3;
+	public static final int KEY_OF_C = 4;
+	public static final int KEY_OF_CSHARP = 5;
+	public static final int KEY_OF_D = 6;
+	public static final int KEY_OF_DSHARP = 7;
+	public static final int KEY_OF_E = 8;
+	public static final int KEY_OF_F = 9;
+	public static final int KEY_OF_FSHARP = 10;
+	public static final int KEY_OF_G = 11;
 	
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
@@ -70,7 +79,7 @@ public class GameActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		vec72 = new Vec72();
+		vec72 = new Vec72(GameActivity.KEY_OF_CSHARP);
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -189,23 +198,18 @@ public class GameActivity extends Activity {
 	}
 
 	public void sendMessage(String msg) {
-		//MESSAGE STRUCTURE:
-		//byte0: type of the message (response, brodcast, redirect)
-		//byte1: id of the sender
-		//byte2: id of the receiver (0xFF if broadcast)
-		//byte3...255: content of the message (string)
-		
 		MyApplication app = (MyApplication) getApplication();
 	
-		byte buf[] = new byte[msg.length() + MESSAGE_HEADER_LENGTH];
+		byte buf[] = new byte[msg.length() + 1];
+		buf[0] = MSG_TYPE_BROADCAST_KEYS;
 		
-		System.arraycopy(msg.getBytes(), 0, buf, MESSAGE_HEADER_LENGTH, msg.length());
+		System.arraycopy(msg.getBytes(), 0, buf, 1, msg.length());
 
 		OutputStream out;
 		try {
 			out = app.sock.getOutputStream();
 			try {
-				out.write(buf, 0, msg.length() + MESSAGE_HEADER_LENGTH);
+				out.write(buf, 0, msg.length() + 1);
 				out.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -233,15 +237,11 @@ public class GameActivity extends Activity {
 						byte buf[] = new byte[bytes_avail];
 						in.read(buf);
 
-						final String s = new String(buf, 0, bytes_avail,
-								"US-ASCII").substring(bytes_avail - MESSAGE_LENGTH);
+						final String s = new String(buf, 1, bytes_avail-1, "US-ASCII");
 						Log.d("MyRcvdMessage", "Received: " + s);
 						JSONObject json = new JSONObject(s);
 
-						Log.d("MyRcvdMessage",
-								"Instrument: "
-										+ json.getString(INSTRUMENT_JSON)
-										+ " Key: " + json.getString(KEY_JSON));
+						Log.d("MyRcvdMessage", "Instrument: " + json.getString(INSTRUMENT_JSON) + " Key: " + json.getString(KEY_JSON));
 						
 						player0_instrument = json.getInt(INSTRUMENT_JSON);
 						player0_key = json.getInt(KEY_JSON);
