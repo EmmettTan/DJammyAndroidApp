@@ -41,6 +41,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.songsequencerapp.MainActivity" />
         </activity>
+        <activity
+            android:name=".SettingsMenu"
+            android:label="@string/title_activity_settings_menu"
+            android:parentActivityName=".MiddlemanConnection" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.songsequencerapp.MiddlemanConnection" />
+        </activity>
     </application>
 
 </manifest>
