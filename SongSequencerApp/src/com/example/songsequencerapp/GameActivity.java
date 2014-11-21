@@ -3,7 +3,6 @@ package com.example.songsequencerapp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,25 +26,26 @@ import android.view.Window;
 import android.view.WindowManager;
 
 
-
 public class GameActivity extends Activity {
 
 	public static final String KEY_JSON = "KEY";
 	public static final String INSTRUMENT_JSON = "INS";
 	public final byte MSG_TYPE_BROADCAST_KEYS = 1;
-		
+	public final byte MSG_TYPE_SET_SOUND_OUT = 2;
+	public final byte MSG_TYPE_MUTE = 3;
+	
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
 	
 	public Vec72 vec72;
-	
 	public Vec216 vec216;
-	
 	public Bass bass;
-	
 	public int bassdrum;
 	public int bassdrum_timer=0;
 	SoundPool soundpool;
+	float instrument_volume = 1;
+	float bpm_volume = (float)0.7;
+	
 	Timer bpm_timer;
 	Timer tcp_timer;
 	Timer sendmsg_timer;
@@ -58,7 +58,6 @@ public class GameActivity extends Activity {
 	SparseIntArray tcp_instruments; //<client, instrument>
 	SparseIntArray tcp_keys; //<client, instrument>
 	public boolean tcp_updated = false;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -223,17 +222,28 @@ public class GameActivity extends Activity {
 						// If so, read them in and create a sring
 						byte buf[] = new byte[bytes_avail];
 						in.read(buf);
-						int client_id = buf[1];
-
-						final String s = new String(buf, 2, bytes_avail-2, "US-ASCII");
-						Log.d("MyRcvdMessage", "Client:" + client_id + " Received: " + s);
-						JSONObject json = new JSONObject(s);
-
-						Log.d("MyRcvdMessage", "Instrument: " + json.getString(INSTRUMENT_JSON) + " Key: " + json.getString(KEY_JSON));
+						int message_type = buf[0];
 						
-						tcp_instruments.put(client_id, json.getInt(INSTRUMENT_JSON));
-						tcp_keys.put(client_id, json.getInt(KEY_JSON));
-						tcp_updated = true;
+						if(message_type == MSG_TYPE_BROADCAST_KEYS){
+							int client_id = buf[1];
+							final String s = new String(buf, 2, bytes_avail-2, "US-ASCII");
+							Log.d("MyRcvdMessage", "Client:" + client_id + " Received: " + s);
+							JSONObject json = new JSONObject(s);
+	
+							Log.d("MyRcvdMessage", "Instrument: " + json.getString(INSTRUMENT_JSON) + " Key: " + json.getString(KEY_JSON));
+							
+							tcp_instruments.put(client_id, json.getInt(INSTRUMENT_JSON));
+							tcp_keys.put(client_id, json.getInt(KEY_JSON));
+							tcp_updated = true;
+						}
+						else if(message_type == MSG_TYPE_SET_SOUND_OUT){
+							instrument_volume = 1;
+							bpm_volume = (float)0.7;
+						}
+						else if(message_type == MSG_TYPE_MUTE){
+							instrument_volume = 0;
+							bpm_volume = 0;
+						}
 						
 					}
 				} 
@@ -253,7 +263,7 @@ public class GameActivity extends Activity {
 		public void run() {
 			Log.d("BPMTimerTask", "Playing note");
 			if(bassdrum_timer == 1){
-				soundpool.play(bassdrum, (float)0.7, (float)0.7, 0, 0, 1);	
+				soundpool.play(bassdrum, bpm_volume, bpm_volume, 0, 0, 1);	
 				bassdrum_timer=0;
 			}
 			else{
@@ -299,37 +309,37 @@ public class GameActivity extends Activity {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
 		switch (touchPosition) {
 		case 0:
-			soundpool.play(vec72.note[10], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[10], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 1:
-			soundpool.play(vec72.note[9], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[9], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 2:
-			soundpool.play(vec72.note[8], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[8], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 3:
-			soundpool.play(vec72.note[7], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[7], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 4:
-			soundpool.play(vec72.note[6], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[6], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 5:
-			soundpool.play(vec72.note[5], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[5], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 6:
-			soundpool.play(vec72.note[4], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[4], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 7:
-			soundpool.play(vec72.note[3], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[3], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 8:
-			soundpool.play(vec72.note[2], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[2], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 9:
-			soundpool.play(vec72.note[1], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[1], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 10:
-			soundpool.play(vec72.note[0], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[0], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		default:
 			Log.d("PlaySound", "Redundant Key Pressed "
@@ -337,5 +347,25 @@ public class GameActivity extends Activity {
 			break;
 		}
 	}
+	
+	public void setDeviceSoundOutput(View view) {
+		MyApplication app = (MyApplication) getApplication();
+		
+		byte buf[] = new byte[1];
+		buf[0] = MSG_TYPE_SET_SOUND_OUT;
 
+		OutputStream out;
+		try {
+			out = app.sock.getOutputStream();
+			try {
+				out.write(buf, 0, 1);
+				out.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

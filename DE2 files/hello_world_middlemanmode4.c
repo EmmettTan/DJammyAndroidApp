@@ -7,12 +7,15 @@
 
 #define MSG_LENGTH 256
 #define MSG_TYPE_BROADCAST_KEYS 1
+#define MSG_TYPE_SET_SOUND_OUT 2
+#define MSG_TYPE_MUTE 3
 
 void usb_initialization();
 struct packet receive_message(unsigned char *message, struct packet packet);
 void send_message(unsigned char *message, struct packet packet);
 void clean_message(unsigned char *message);
-void broadcast_keys(unsigned char *message, struct packet packet);
+void broadcast_keys(unsigned char *message, struct packet packet, unsigned char receiver_client);
+void set_master_device(struct packet packet, unsigned char *receiver_client);
 
 struct packet{
 	unsigned char id;
@@ -23,13 +26,17 @@ struct packet{
 int main() {
 	unsigned char message[MSG_LENGTH];
 	struct packet packet;
+	unsigned char receiver_client = 255; //255 means broadcast
 	usb_initialization();
 
 	while (1) {
 		packet = receive_message(message, packet);
 		switch(packet.type){
 			case MSG_TYPE_BROADCAST_KEYS:
-				broadcast_keys(message, packet); // broadcast keys
+				broadcast_keys(message, packet, receiver_client); // broadcast keys
+				break;
+			case MSG_TYPE_SET_SOUND_OUT:
+				set_master_device(packet, &receiver_client);
 				break;
 			default:
 				printf("MESSAGE TYPE NOT RECOGNIZED!");
@@ -117,9 +124,22 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 	return packet;
 }
 
-void broadcast_keys(unsigned char *message, struct packet packet){
+void set_master_device(struct packet packet, unsigned char *receiver_client){
+	unsigned char master_id = packet.id;
+	packet.id = master_id;
+	packet.type = MSG_TYPE_SET_SOUND_OUT;
+	send_message("", packet);
+
+	packet.id = 255;  // brodcast message
+	packet.type = MSG_TYPE_MUTE;
+	send_message("", packet);
+
+	*receiver_client = master_id;
+}
+
+void broadcast_keys(unsigned char *message, struct packet packet, unsigned char receiver_client){
 	message[0] = packet.id; // Puts the client id in the first byte of the message (for the android)
-	packet.id = 255; // sets id of the client to 0xFF that means broadcast to middleman
+	packet.id = receiver_client; // sets the packet id to the receiver client id. 255 is for broadcast
 	send_message(message, packet);
 }
 

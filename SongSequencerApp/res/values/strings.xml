@@ -34,5 +34,6 @@
     <string name="ChooseKey">Choose Key:</string>
     <string name="title_activity_settings_menu">SettingsMenu</string>
     <string name="Done">Done</string>
+     <string name="sound_button">Sound</string>
 
 </resources>
