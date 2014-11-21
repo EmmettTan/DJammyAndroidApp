@@ -6,18 +6,18 @@ import android.media.SoundPool;
 public abstract class Instrument {
 	
 	//Keys
-	public static int KEY_OF_GSHARP;
-	public static int KEY_OF_A;
-	public static int KEY_OF_ASHARP;
-	public static int KEY_OF_B;
-	public static int KEY_OF_C;
-	public static int KEY_OF_CSHARP;
-	public static int KEY_OF_D;
-	public static int KEY_OF_DSHARP;
-	public static int KEY_OF_E;
-	public static int KEY_OF_F;
-	public static int KEY_OF_FSHARP;
-	public static int KEY_OF_G;
+	public int KEY_OF_GSHARP;
+	public int KEY_OF_A;
+	public int KEY_OF_ASHARP;
+	public int KEY_OF_B;
+	public int KEY_OF_C;
+	public int KEY_OF_CSHARP;
+	public int KEY_OF_D;
+	public int KEY_OF_DSHARP;
+	public int KEY_OF_E;
+	public int KEY_OF_F;
+	public int KEY_OF_FSHARP;
+	public int KEY_OF_G;
 	
 	// vec72 sounds
 	public int note[] = new int[11];
