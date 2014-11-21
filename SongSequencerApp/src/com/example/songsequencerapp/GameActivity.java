@@ -78,13 +78,10 @@ public class GameActivity extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_game);
-
-		tcp_task = new TCPReadTimerTask();
-		tcp_timer = new Timer();
-		bpmTask = new BPMTimerTask();
+		
 		bpm_timer = new Timer();
 		sendmsg_timer = new Timer();
-		sendmsg_task = new SendMsgTimerTask();
+		tcp_timer = new Timer();
 		
 		tcp_instruments = new SparseIntArray();
 		tcp_keys = new SparseIntArray();
@@ -101,6 +98,10 @@ public class GameActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		tcp_task = new TCPReadTimerTask();
+		bpmTask = new BPMTimerTask();
+		sendmsg_task = new SendMsgTimerTask();
+		
 		bpm_timer.schedule(bpmTask, 210, 210);
 		tcp_timer.schedule(tcp_task, 0, 50);
 		sendmsg_timer.schedule(sendmsg_task, 50, 100);
@@ -112,6 +113,10 @@ public class GameActivity extends Activity {
 		bpmTask.cancel();
 		tcp_task.cancel();
 		sendmsg_task.cancel();
+		
+//		bpm_timer.purge();
+//		tcp_timer.purge();
+//		sendmsg_timer.purge();
 	}
 
 	@Override
