@@ -28,11 +28,13 @@ import android.view.WindowManager;
 
 public class GameActivity extends Activity {
 
-	public static final String KEY_JSON = "KEY";
-	public static final String INSTRUMENT_JSON = "INS";
+	public final String KEY_JSON = "KEY";
+	public final String INSTRUMENT_JSON = "INS";
 	public final byte MSG_TYPE_BROADCAST_KEYS = 1;
 	public final byte MSG_TYPE_SET_SOUND_OUT = 2;
 	public final byte MSG_TYPE_MUTE = 3;
+	
+	public static boolean groupSession = true; // If false, individual session is set
 	
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
@@ -100,7 +102,7 @@ public class GameActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		bpm_timer.schedule(bpmTask, 210, 210);
-		tcp_timer.schedule(tcp_task, 100, 100);
+		tcp_timer.schedule(tcp_task, 0, 50);
 		sendmsg_timer.schedule(sendmsg_task, 50, 100);
 	}
 	
@@ -269,7 +271,7 @@ public class GameActivity extends Activity {
 			else{
 				bassdrum_timer=1;
 			}
-			if(tcp_updated == true){
+			if(groupSession == true && tcp_updated == true){
 				for(int i = 0; i < tcp_keys.size(); i++) {
 					playSound(tcp_keys.valueAt(i));
 				}
@@ -277,14 +279,14 @@ public class GameActivity extends Activity {
 				tcp_instruments.clear();
 				tcp_updated = false;
 			}
-//			if (onTouch == true) {
-//				playSound(GameView.touchPosition);
-//				keyPressed = false;
-//			}
-//			else if (keyPressed == true){
-//				playSound(GameView.touchPosition);
-//				keyPressed = false;
-//			}
+			if (groupSession == false && onTouch == true) {
+				playSound(GameView.touchPosition);
+				keyPressed = false;
+			}
+			else if (groupSession == false && keyPressed == true){
+				playSound(GameView.touchPosition);
+				keyPressed = false;
+			}
 		}
 	}
 	

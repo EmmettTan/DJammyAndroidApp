@@ -1,13 +1,9 @@
 package com.example.songsequencerapp;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +11,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,6 +61,7 @@ public class MiddlemanConnection extends Activity {
 		// Make sure the socket is not already opened
 		if (app.sock != null && app.sock.isConnected() && !app.sock.isClosed()) {
 			msgbox.setText("Socket already open");
+			GameActivity.groupSession = true;
 			Intent intent = new Intent(MiddlemanConnection.this,
 					GameActivity.class);
 			startActivity(intent);
@@ -94,6 +90,7 @@ public class MiddlemanConnection extends Activity {
 		Toast t = Toast.makeText(getApplicationContext(),
 				"Skipping... Not connected", Toast.LENGTH_LONG);
 		t.show();
+		GameActivity.groupSession = false;
 		Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
 		startActivity(intent);
 	}
@@ -185,7 +182,8 @@ public class MiddlemanConnection extends Activity {
 				connection_text = (EditText) findViewById(R.id.port);
 				editor.putString("port", connection_text.getText().toString());
 				editor.commit();
-
+				
+				GameActivity.groupSession = true;
 				Intent intent = new Intent(MiddlemanConnection.this,
 						GameActivity.class);
 				startActivity(intent);
