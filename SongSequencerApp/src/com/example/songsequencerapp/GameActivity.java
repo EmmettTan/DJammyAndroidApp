@@ -42,6 +42,7 @@ public class GameActivity extends Activity {
 	public Vec72 vec72;
 	public Vec216 vec216;
 	public Bass bass;
+	public Drums drums;
 	public int bassdrum;
 	public int bassdrum_timer=0;
 	SoundPool soundpool;
@@ -64,6 +65,8 @@ public class GameActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		drums = new Drums();
 		
 		vec72 = new Vec72();
 		vec72.init(vec72.KEY_OF_GSHARP);
@@ -91,6 +94,7 @@ public class GameActivity extends Activity {
 		vec72.load(soundpool, getApplicationContext(), 0);
 		vec216.load(soundpool, getApplicationContext(), 0);
 		bass.load(soundpool, getApplicationContext(), 0);
+		drums.load(soundpool, getApplicationContext(), 0);
 		
 		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
 	}
@@ -316,37 +320,37 @@ public class GameActivity extends Activity {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
 		switch (touchPosition) {
 		case 0:
-			soundpool.play(bass.note[10], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[10], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 1:
-			soundpool.play(bass.note[9], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[9], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 2:
-			soundpool.play(bass.note[8], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[8], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 3:
-			soundpool.play(bass.note[7], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[7], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 4:
-			soundpool.play(bass.note[6], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[6], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 5:
-			soundpool.play(bass.note[5], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[5], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 6:
-			soundpool.play(bass.note[4], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[4], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 7:
-			soundpool.play(bass.note[3], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[3], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 8:
-			soundpool.play(bass.note[2], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[2], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 9:
-			soundpool.play(bass.note[1], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[1], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 10:
-			soundpool.play(bass.note[0], instrument_volume, instrument_volume, 0, 0, 1);
+			soundpool.play(vec72.note[0], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		default:
 			Log.d("PlaySound", "Redundant Key Pressed "
