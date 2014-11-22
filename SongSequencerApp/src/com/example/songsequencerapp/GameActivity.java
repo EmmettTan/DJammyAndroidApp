@@ -43,6 +43,7 @@ public class GameActivity extends Activity {
 	public Vec216 vec216;
 	public Bass bass;
 	public Drums drums;
+	
 	public int bassdrum;
 	public int bassdrum_timer=0;
 	SoundPool soundpool;
@@ -282,18 +283,18 @@ public class GameActivity extends Activity {
 			}
 			if(groupSession == true && tcp_updated == true){
 				for(int i = 0; i < tcp_keys.size(); i++) {
-					playSound(tcp_keys.valueAt(i));
+					playSound(tcp_keys.valueAt(i), tcp_instruments.valueAt(i));
 				}
 				tcp_keys.clear();
 				tcp_instruments.clear();
 				tcp_updated = false;
 			}
 			if (groupSession == false && onTouch == true) {
-				playSound(GameView.touchPosition);
+				playSound(GameView.touchPosition, 0);
 				keyPressed = false;
 			}
 			else if (groupSession == false && keyPressed == true){
-				playSound(GameView.touchPosition);
+				playSound(GameView.touchPosition, 0);
 				keyPressed = false;
 			}
 		}
@@ -316,7 +317,7 @@ public class GameActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void playSound(int touchPosition) {
+	public void playSound(int touchPosition, int instrument) {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
 		switch (touchPosition) {
 		case 0:
