@@ -57,7 +57,7 @@ public class GameActivity extends Activity {
 	BPMTimerTask bpmTask;
 	TCPReadTimerTask tcp_task;
 	
-	public int my_instrument = 0;
+	public int my_instrument = 1;
 	public int my_key;
 	SparseIntArray tcp_instruments; //<client, instrument>
 	SparseIntArray tcp_keys; //<client, instrument>
@@ -70,13 +70,13 @@ public class GameActivity extends Activity {
 		drums = new Drums();
 		
 		vec72 = new Vec72();
-		vec72.init(vec72.KEY_OF_GSHARP);
+		vec72.init(vec72.KEY_OF_B);
 		
 		vec216 = new Vec216();
 		vec216.init(vec216.KEY_OF_B);
 		
 		bass = new Bass();
-		bass.init(bass.KEY_OF_FSHARP);
+		bass.init(bass.KEY_OF_B);
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -320,16 +320,16 @@ public class GameActivity extends Activity {
 	public void playSound(int touchPosition, int instrument) {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
 		switch(instrument){
-		case 0:
+		case Instrument.Vec72:
 			pickVec72Note(touchPosition);
 			break;
-		case 1:
+		case Instrument.Vec216:
 			pickVec216Note(touchPosition);
 			break;
-		case 2:
+		case Instrument.Bass:
 			pickBassNote(touchPosition);
 			break;
-		case 3:
+		case Instrument.Drums:
 			pickDrumsNote(touchPosition);
 			break;
 		default:
