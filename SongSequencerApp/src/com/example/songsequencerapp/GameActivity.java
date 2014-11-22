@@ -319,6 +319,25 @@ public class GameActivity extends Activity {
 
 	public void playSound(int touchPosition, int instrument) {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
+		switch(instrument){
+		case 0:
+			pickVec72Note(touchPosition);
+			break;
+		case 1:
+			pickVec216Note(touchPosition);
+			break;
+		case 2:
+			pickBassNote(touchPosition);
+			break;
+		case 3:
+			pickDrumsNote(touchPosition);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void pickVec72Note(int touchPosition){
 		switch (touchPosition) {
 		case 0:
 			soundpool.play(vec72.note[10], instrument_volume, instrument_volume, 0, 0, 1);
@@ -352,6 +371,132 @@ public class GameActivity extends Activity {
 			break;
 		case 10:
 			soundpool.play(vec72.note[0], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		default:
+			Log.d("PlaySound", "Redundant Key Pressed "
+					+ GameView.touchPosition);
+			break;
+		}
+	}
+	
+	public void pickVec216Note(int touchPosition){
+		switch (touchPosition) {
+		case 0:
+			soundpool.play(vec216.note[10], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 1:
+			soundpool.play(vec216.note[9], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 2:
+			soundpool.play(vec216.note[8], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 3:
+			soundpool.play(vec216.note[7], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 4:
+			soundpool.play(vec216.note[6], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 5:
+			soundpool.play(vec216.note[5], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 6:
+			soundpool.play(vec216.note[4], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 7:
+			soundpool.play(vec216.note[3], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 8:
+			soundpool.play(vec216.note[2], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 9:
+			soundpool.play(vec216.note[1], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 10:
+			soundpool.play(vec216.note[0], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		default:
+			Log.d("PlaySound", "Redundant Key Pressed "
+					+ GameView.touchPosition);
+			break;
+		}
+	}
+	
+	public void pickBassNote(int touchPosition){
+		switch (touchPosition) {
+		case 0:
+			soundpool.play(bass.note[10], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 1:
+			soundpool.play(bass.note[9], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 2:
+			soundpool.play(bass.note[8], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 3:
+			soundpool.play(bass.note[7], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 4:
+			soundpool.play(bass.note[6], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 5:
+			soundpool.play(bass.note[5], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 6:
+			soundpool.play(bass.note[4], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 7:
+			soundpool.play(bass.note[3], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 8:
+			soundpool.play(bass.note[2], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 9:
+			soundpool.play(bass.note[1], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 10:
+			soundpool.play(bass.note[0], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		default:
+			Log.d("PlaySound", "Redundant Key Pressed "
+					+ GameView.touchPosition);
+			break;
+		}
+	}
+	
+	public void pickDrumsNote(int touchPosition){
+		switch (touchPosition) {
+		case 0:
+			soundpool.play(drums.note[10], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 1:
+			soundpool.play(drums.note[9], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 2:
+			soundpool.play(drums.note[8], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 3:
+			soundpool.play(drums.note[7], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 4:
+			soundpool.play(drums.note[6], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 5:
+			soundpool.play(drums.note[5], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 6:
+			soundpool.play(drums.note[4], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 7:
+			soundpool.play(drums.note[3], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 8:
+			soundpool.play(drums.note[2], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 9:
+			soundpool.play(drums.note[1], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 10:
+			soundpool.play(drums.note[0], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		default:
 			Log.d("PlaySound", "Redundant Key Pressed "

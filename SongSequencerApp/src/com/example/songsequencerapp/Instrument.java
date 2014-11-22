@@ -5,6 +5,11 @@ import android.media.SoundPool;
 
 public abstract class Instrument {
 	
+	public static final int Vec72 = 0;
+	public static final int Vec216 = 1;
+	public static final int Bass = 2;
+	public static final int Drums = 3;
+	
 	//Keys
 	public int KEY_OF_GSHARP;
 	public int KEY_OF_A;
