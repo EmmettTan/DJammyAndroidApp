@@ -24,7 +24,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="2000dip"
+        android:minHeight="200dip"
         android:minWidth="200dip"
         android:layout_alignBottom="@+id/textView1"
         android:layout_alignParentRight="true"

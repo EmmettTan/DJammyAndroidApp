@@ -16,23 +16,24 @@ import android.widget.ProgressBar;
 
 public class LoopActivity extends Activity {
 
+	public int loopArray[];
 	ProgressBar progress_bar;
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
 	int progress_percentage = 0;
+	int beatPosition = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+
 		super.onCreate(savedInstanceState);
+		loopArray = new int[8];
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_loop);
 		progress_bar = (ProgressBar) findViewById(R.id.progressBar1);
-		
-		
-		
+
 	}
 
 	@Override
@@ -84,8 +85,17 @@ public class LoopActivity extends Activity {
 		case (MotionEvent.ACTION_UP):
 			LoopView.onTouch = false;
 			loop_view.invalidate();
-			progress_percentage = progress_percentage + 13;
-			progress_bar.setProgress(progress_percentage);
+			
+			if (beatPosition == 8) {
+				progress_percentage = 0;
+				beatPosition = 0;
+				progress_bar.setProgress(0);
+			} else {
+				progress_percentage = progress_percentage + 13;
+				progress_bar.setProgress(progress_percentage);
+				loopArray[beatPosition] = LoopView.touchPosition;
+				beatPosition++;
+			}
 			return true;
 
 		default:
