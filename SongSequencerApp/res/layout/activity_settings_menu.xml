@@ -17,6 +17,14 @@
         android:text="@string/Setting"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -24,29 +32,43 @@
         android:text="@string/ChooseTune"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <RadioButton
-        android:id="@+id/radioButton1"
+    <RadioGroup
+        android:id="@+id/radioGroup1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Synth1" />
+        android:layout_height="wrap_content" >
 
-    <RadioButton
-        android:id="@+id/radioButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Synth2" />
+        <RadioButton
+            android:id="@+id/radio0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:onClick="setInstrument"
+            android:text="@string/Synth1" />
 
-    <RadioButton
-        android:id="@+id/radioButton3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Synth3" />
+        <RadioButton
+            android:id="@+id/radio1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setInstrument"
+            android:text="@string/Synth2" />
 
-    <RadioButton
-        android:id="@+id/radioButton4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Synth4" />
+        <RadioButton
+            android:id="@+id/radio2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:onClick="setInstrument"
+            android:text="@string/Synth3" />
+        <RadioButton
+            android:id="@+id/radio3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:onClick="setInstrument"
+            android:text="@string/Synth4" />
+    </RadioGroup>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/textView3"
@@ -55,11 +77,34 @@
         android:text="@string/ChooseKey"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Spinner
         android:id="@+id/keys_spinner"
         android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-         />
+        android:text="@string/ChooseBpm"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/seekBarLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="TextView"
+        android:textSize="40sp" />
+
+    <SeekBar
+        android:id="@+id/seekBar1"
+        android:layout_width="238dp"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/btnSubmit"
