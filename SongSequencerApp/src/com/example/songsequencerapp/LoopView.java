@@ -13,6 +13,7 @@ public class LoopView extends View{
 	private int white = Color.rgb(255, 255, 255);
 	private int dark_blue = Color.rgb(0, 0, 153);
 	public static int touchPosition;
+	public static boolean onTouch;
 
 	public LoopView(Context context, AttributeSet attribute_set) {
 		super(context, attribute_set);
@@ -34,7 +35,7 @@ public class LoopView extends View{
 		}
 
 		// Draw rectangle on touch
-		if (GameActivity.onTouch) {
+		if (onTouch) {
 			paint.setColor(light_blue);
 			canvas.drawRect(0, touchPosition * getKeySize(), max_x,
 					touchPosition * getKeySize() + getKeySize(), paint);

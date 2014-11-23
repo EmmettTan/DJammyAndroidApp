@@ -14,6 +14,8 @@ public class GameView extends View {
 	private int dark_blue = Color.rgb(0, 0, 153);
 	public static int touchPosition;
 	
+
+	
 	public GameView(Context context, AttributeSet attribute_set) {
 		super(context, attribute_set);
 	}

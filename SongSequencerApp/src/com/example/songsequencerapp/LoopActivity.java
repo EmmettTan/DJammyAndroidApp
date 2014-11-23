@@ -1,16 +1,38 @@
 package com.example.songsequencerapp;
 
+import java.security.PublicKey;
 import android.app.Activity;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
 
 public class LoopActivity extends Activity {
 
+	ProgressBar progress_bar;
+	public static boolean onTouch = false;
+	boolean keyPressed = false;
+	int progress_percentage = 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_loop);
+		progress_bar = (ProgressBar) findViewById(R.id.progressBar1);
+		
+		
+		
 	}
 
 	@Override
@@ -30,5 +52,44 @@ public class LoopActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private int getKeyPosition(float y_pos) {
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		float key_size = size.y / GameView.DIVISIONS;
+		return (int) (y_pos / key_size);
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		float y = event.getY();
+		View loop_view = findViewById(R.id.loopView1);
+		int key_position = getKeyPosition(y);
+
+		switch (event.getAction()) {
+		case (MotionEvent.ACTION_DOWN):
+			LoopView.onTouch = true;
+			keyPressed = true;
+			LoopView.touchPosition = key_position;
+			loop_view.invalidate();
+			return true;
+
+		case (MotionEvent.ACTION_MOVE):
+			LoopView.touchPosition = key_position;
+			loop_view.invalidate();
+			return true;
+
+		case (MotionEvent.ACTION_UP):
+			LoopView.onTouch = false;
+			loop_view.invalidate();
+			progress_percentage = progress_percentage + 13;
+			progress_bar.setProgress(progress_percentage);
+			return true;
+
+		default:
+			return super.onTouchEvent(event);
+		}
 	}
 }
