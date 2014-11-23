@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-
 public class GameActivity extends Activity {
 
 	public final String KEY_JSON = "K";
@@ -324,14 +323,14 @@ public class GameActivity extends Activity {
 		}
 	}
 	
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		int id = item.getItemId();
-//		if (id == R.id.action_settings) {
-//			return true;
-//		}
-//		return super.onOptionsItemSelected(item);
-//	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	
 	//PLAY notes depending on the instrument and key received
 	public void playSound(int touchPosition, int instrument) {
