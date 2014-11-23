@@ -28,8 +28,8 @@ import android.view.WindowManager;
 
 public class GameActivity extends Activity {
 
-	public final String KEY_JSON = "KEY";
-	public final String INSTRUMENT_JSON = "INS";
+	public final String KEY_JSON = "K";
+	public final String INSTRUMENT_JSON = "I";
 	public final byte MSG_TYPE_BROADCAST_KEYS = 1;
 	public final byte MSG_TYPE_SET_SOUND_OUT = 2;
 	public final byte MSG_TYPE_MUTE = 3;
@@ -68,13 +68,10 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		drums = new Drums();
-		
 		vec72 = new Vec72();
 		vec72.init(vec72.KEY_OF_B);
-		
 		vec216 = new Vec216();
-		vec216.init(vec216.KEY_OF_B);
-		
+		vec216.init(vec216.KEY_OF_B);	
 		bass = new Bass();
 		bass.init(bass.KEY_OF_B);
 		
@@ -118,10 +115,6 @@ public class GameActivity extends Activity {
 		bpmTask.cancel();
 		tcp_task.cancel();
 		sendmsg_task.cancel();
-		
-//		bpm_timer.purge();
-//		tcp_timer.purge();
-//		sendmsg_timer.purge();
 	}
 
 	@Override
@@ -193,7 +186,8 @@ public class GameActivity extends Activity {
 
 		return json.toString();
 	}
-
+	
+	//SEND the keys and notes only
 	public void sendMessage(String msg) { // BROADCAST MODE!
 		MyApplication app = (MyApplication) getApplication();
 	
@@ -217,7 +211,7 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	// Used to receive message from the middleman/DE2 BROADCAST MODE!
+	// RECEIVE message from the middleman/DE2
 	public class TCPReadTimerTask extends TimerTask {
 		public void run() {
 			MyApplication app = (MyApplication) getApplication();
@@ -270,7 +264,7 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	// Used to receive message from the middleman/DE2
+	//PLAY notes (timer)
 	public class BPMTimerTask extends TimerTask {
 		public void run() {
 			Log.d("BPMTimerTask", "Playing note");
@@ -300,6 +294,7 @@ public class GameActivity extends Activity {
 		}
 	}
 	
+	//SENDS messages from time to time
 	public class SendMsgTimerTask extends TimerTask {
 		public void run() {
 			if(onTouch == true){
@@ -308,15 +303,37 @@ public class GameActivity extends Activity {
 		}
 	}
 	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+	//SETS the SOUND OUTPUT DEVICE
+	public void setDeviceSoundOutput(View view) {
+		MyApplication app = (MyApplication) getApplication();
+		
+		byte buf[] = new byte[1];
+		buf[0] = MSG_TYPE_SET_SOUND_OUT;
 
+		OutputStream out;
+		try {
+			out = app.sock.getOutputStream();
+			try {
+				out.write(buf, 0, 1);
+				out.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		int id = item.getItemId();
+//		if (id == R.id.action_settings) {
+//			return true;
+//		}
+//		return super.onOptionsItemSelected(item);
+//	}
+	
+	//PLAY notes depending on the instrument and key received
 	public void playSound(int touchPosition, int instrument) {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
 		switch(instrument){
@@ -337,6 +354,7 @@ public class GameActivity extends Activity {
 		}
 	}
 	
+	//PLAY Vec72 notes
 	public void pickVec72Note(int touchPosition){
 		switch (touchPosition) {
 		case 0:
@@ -379,6 +397,7 @@ public class GameActivity extends Activity {
 		}
 	}
 	
+	//PLAY Vec216 notes
 	public void pickVec216Note(int touchPosition){
 		switch (touchPosition) {
 		case 0:
@@ -421,6 +440,7 @@ public class GameActivity extends Activity {
 		}
 	}
 	
+	//PLAY bass notes
 	public void pickBassNote(int touchPosition){
 		switch (touchPosition) {
 		case 0:
@@ -463,6 +483,7 @@ public class GameActivity extends Activity {
 		}
 	}
 	
+	// Play drums sounds
 	public void pickDrumsNote(int touchPosition){
 		switch (touchPosition) {
 		case 0:
@@ -502,26 +523,6 @@ public class GameActivity extends Activity {
 			Log.d("PlaySound", "Redundant Key Pressed "
 					+ GameView.touchPosition);
 			break;
-		}
-	}
-	
-	public void setDeviceSoundOutput(View view) {
-		MyApplication app = (MyApplication) getApplication();
-		
-		byte buf[] = new byte[1];
-		buf[0] = MSG_TYPE_SET_SOUND_OUT;
-
-		OutputStream out;
-		try {
-			out = app.sock.getOutputStream();
-			try {
-				out.write(buf, 0, 1);
-				out.flush();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
