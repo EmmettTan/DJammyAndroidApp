@@ -13,7 +13,7 @@
         <item>E</item>
         <item>F</item>
         <item>F#/Gb</item>
-		<item>G</item>
+        <item>G</item>
     </string-array>
 
     <string name="app_name">SongSequencerApp</string>
@@ -34,6 +34,7 @@
     <string name="ChooseKey">Choose Key:</string>
     <string name="title_activity_settings_menu">SettingsMenu</string>
     <string name="Done">Done</string>
-     <string name="sound_button">Sound</string>
+    <string name="sound_button">Sound</string>
+    <string name="title_activity_loop">LoopActivity</string>
 
 </resources>
