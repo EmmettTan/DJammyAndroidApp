@@ -7,12 +7,15 @@
 
 #define MSG_LENGTH 256
 #define MSG_TYPE_BROADCAST_KEYS 1
+#define MSG_TYPE_SET_SOUND_OUT 2
+#define MSG_TYPE_MUTE 3
 
 void usb_initialization();
 struct packet receive_message(unsigned char *message, struct packet packet);
 void send_message(unsigned char *message, struct packet packet);
 void clean_message(unsigned char *message);
-void broadcast_keys(unsigned char *message, struct packet packet);
+void broadcast_keys(unsigned char *message, struct packet packet, unsigned char receiver_client);
+void set_master_device(struct packet packet, unsigned char *receiver_client);
 
 struct packet{
 	unsigned char id;
@@ -23,19 +26,23 @@ struct packet{
 int main() {
 	unsigned char message[MSG_LENGTH];
 	struct packet packet;
+	unsigned char receiver_client = 255; //255 means broadcast
 	usb_initialization();
 
 	while (1) {
 		packet = receive_message(message, packet);
 		switch(packet.type){
 			case MSG_TYPE_BROADCAST_KEYS:
-				broadcast_keys(message, packet); // broadcast keys
+				broadcast_keys(message, packet, receiver_client); // broadcast keys
+				break;
+			case MSG_TYPE_SET_SOUND_OUT:
+				set_master_device(packet, &receiver_client);
 				break;
 			default:
 				printf("MESSAGE TYPE NOT RECOGNIZED!");
 				break;
 		}
-		clean_message(message);
+//		clean_message(message);
 	}
 
 	return 0;
@@ -75,7 +82,7 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 		if (bytes_recvd > 0)
 			total_recvd += bytes_recvd;
 	}
-	printf("Client ID: %d\t", id);
+//	printf("Client ID: %d\t", id);
 	packet.id = id;
 
 	// 2nd byte is the message size
@@ -86,7 +93,7 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 			total_recvd += bytes_recvd;
 	}
 	int msgsize = (int) msgdata;
-	printf("Message size: %d\t", msgsize);
+//	printf("Message size: %d\t", msgsize);
 	packet.msgsize = msgsize;
 
 	// 3rd byte is the message type (sent from the android)
@@ -96,7 +103,7 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 		if (bytes_recvd > 0)
 			total_recvd += bytes_recvd;
 	}
-	printf("Message type: %d\t", msg_type);
+//	printf("Message type: %d\t", msg_type);
 	packet.type = msg_type;
 
 	// Reads the rest of the message
@@ -109,17 +116,30 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 	}
 	message[msgsize] = '\0';
 
-	printf("Message is:");
-	for (i = 0; i < msgsize; i++) {
-		printf("%c", message[i]);
-	}
-	printf("\n");
+//	printf("Message is:");
+//	for (i = 0; i < msgsize; i++) {
+//		printf("%c", message[i]);
+//	}
+//	printf("\n");
 	return packet;
 }
 
-void broadcast_keys(unsigned char *message, struct packet packet){
+void set_master_device(struct packet packet, unsigned char *receiver_client){
+	unsigned char master_id = packet.id;
+	packet.id = master_id;
+	packet.type = MSG_TYPE_SET_SOUND_OUT;
+	send_message("", packet);
+
+	packet.id = 255;  // brodcast message
+	packet.type = MSG_TYPE_MUTE;
+	send_message("", packet);
+
+	*receiver_client = master_id;
+}
+
+void broadcast_keys(unsigned char *message, struct packet packet, unsigned char receiver_client){
 	message[0] = packet.id; // Puts the client id in the first byte of the message (for the android)
-	packet.id = 255; // sets id of the client to 0xFF that means broadcast to middleman
+	packet.id = receiver_client; // sets the packet id to the receiver client id. 255 is for broadcast
 	send_message(message, packet);
 }
 
@@ -132,13 +152,13 @@ void send_message(unsigned char *message, struct packet packet) {
 	memcpy(&clientmsg[3], message, packet.msgsize); // Considering the msgsize contains the message type
 	unsigned int message_length = packet.msgsize + 2;
 
-	printf("Sending the message to the Middleman\n");
+//	printf("Sending the message to the Middleman\n");
 	usb_device_send(clientmsg, message_length);
-	printf("Message Echo Complete: \n");
-	for (i = 0; i < message_length; i++) {
-		printf("%c", clientmsg[i]);
-	}
-	printf("\n");
+//	printf("Message Echo Complete: \n");
+//	for (i = 0; i < message_length; i++) {
+//		printf("%c", clientmsg[i]);
+//	}
+//	printf("\n");
 }
 
 void clean_message(unsigned char *message) {
@@ -146,7 +166,7 @@ void clean_message(unsigned char *message) {
 	for (i = 0; i < MSG_LENGTH; i++) {
 		message[i] = '\0';
 	}
-	printf("cleaned buffer\n");
+//	printf("cleaned buffer\n");
 }
 
 

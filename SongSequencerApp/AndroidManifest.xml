@@ -9,7 +9,7 @@
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-	
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -36,7 +36,8 @@
         <activity
             android:name=".GameActivity"
             android:label="@string/title_activity_game"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity" 
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.songsequencerapp.MainActivity" />
@@ -48,6 +49,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.songsequencerapp.MiddlemanConnection" />
+        </activity>
+        <activity
+            android:name=".LoopActivity"
+            android:label="@string/title_activity_loop" >
         </activity>
     </application>
 

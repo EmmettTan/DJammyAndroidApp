@@ -16,6 +16,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,47 +25,30 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-
-
 public class GameActivity extends Activity {
 
-	public static final String KEY_JSON = "KEY";
-	public static final String INSTRUMENT_JSON = "INS";
+	public final String KEY_JSON = "K";
+	public final String INSTRUMENT_JSON = "I";
 	public final byte MSG_TYPE_BROADCAST_KEYS = 1;
+	public final byte MSG_TYPE_SET_SOUND_OUT = 2;
+	public final byte MSG_TYPE_MUTE = 3;
 	
-	public static final int KEY_OF_GSHARP = 0;
-	public static final int KEY_OF_A = 1;
-	public static final int KEY_OF_ASHARP = 2;
-	public static final int KEY_OF_B = 3;
-	public static final int KEY_OF_C = 4;
-	public static final int KEY_OF_CSHARP = 5;
-	public static final int KEY_OF_D = 6;
-	public static final int KEY_OF_DSHARP = 7;
-	public static final int KEY_OF_E = 8;
-	public static final int KEY_OF_F = 9;
-	public static final int KEY_OF_FSHARP = 10;
-	public static final int KEY_OF_G = 11;
+	public static boolean groupSession = true; // If false, individual session is set
 	
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
 	
 	public Vec72 vec72;
-	//vec216 sounds
-	public int vec216_b3;
-	public int vec216_d4;
-	public int vec216_e4;
-	public int vec216_fsharp4;
-	public int vec216_a4;
-	public int vec216_b4;
-	public int vec216_d5;
-	public int vec216_e5;
-	public int vec216_fsharp5;
-	public int vec216_a5;
-	public int vec216_b5;
+	public Vec216 vec216;
+	public Bass bass;
+	public Drums drums;
 	
 	public int bassdrum;
 	public int bassdrum_timer=0;
 	SoundPool soundpool;
+	float instrument_volume = 1;
+	float bpm_volume = (float)0.7;
+	
 	Timer bpm_timer;
 	Timer tcp_timer;
 	Timer sendmsg_timer;
@@ -72,49 +56,42 @@ public class GameActivity extends Activity {
 	BPMTimerTask bpmTask;
 	TCPReadTimerTask tcp_task;
 	
-	public int my_instrument = 0;
+	public int my_instrument = 1;
 	public int my_key;
-	public int player0_instrument;
-	public int player0_key;
+	SparseIntArray tcp_instruments; //<client, instrument>
+	SparseIntArray tcp_keys; //<client, instrument>
 	public boolean tcp_updated = false;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		vec72 = new Vec72(GameActivity.KEY_OF_CSHARP);
+		
+		drums = new Drums();
+		vec72 = new Vec72();
+		vec72.init(vec72.KEY_OF_B);
+		vec216 = new Vec216();
+		vec216.init(vec216.KEY_OF_B);	
+		bass = new Bass();
+		bass.init(bass.KEY_OF_B);
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_game);
-
-		tcp_task = new TCPReadTimerTask();
-		tcp_timer = new Timer();
-		bpmTask = new BPMTimerTask();
+		
 		bpm_timer = new Timer();
 		sendmsg_timer = new Timer();
-		sendmsg_task = new SendMsgTimerTask();
+		tcp_timer = new Timer();
+		
+		tcp_instruments = new SparseIntArray();
+		tcp_keys = new SparseIntArray();
 		
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-		//First Octave
-		vec216_b3 = soundpool.load(getApplicationContext(), R.raw.vec216_b3, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_d4 = soundpool.load(getApplicationContext(), R.raw.vec216_d4, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_e4 = soundpool.load(getApplicationContext(), R.raw.vec216_e4, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_fsharp4 = soundpool.load(getApplicationContext(), R.raw.vec216_fsharp4, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_a4 = soundpool.load(getApplicationContext(), R.raw.vec216_a4, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_b4 = soundpool.load(getApplicationContext(), R.raw.vec216_b4, 1); // in 2nd param u have to pass your desire ringtone
-		//Second Octave
-		vec216_d5 = soundpool.load(getApplicationContext(), R.raw.vec216_d5, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_e5 = soundpool.load(getApplicationContext(), R.raw.vec216_e5, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_fsharp5 = soundpool.load(getApplicationContext(), R.raw.vec216_fsharp5, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_a5 = soundpool.load(getApplicationContext(), R.raw.vec216_a5, 1); // in 2nd param u have to pass your desire ringtone
-		vec216_b5 = soundpool.load(getApplicationContext(), R.raw.vec216_b5, 1); // in 2nd param u have to pass your desire ringtone
-	
 		
 		vec72.load(soundpool, getApplicationContext(), 0);
-		
+		vec216.load(soundpool, getApplicationContext(), 0);
+		bass.load(soundpool, getApplicationContext(), 0);
+		drums.load(soundpool, getApplicationContext(), 0);
 		
 		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
 	}
@@ -122,8 +99,12 @@ public class GameActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		tcp_task = new TCPReadTimerTask();
+		bpmTask = new BPMTimerTask();
+		sendmsg_task = new SendMsgTimerTask();
+		
 		bpm_timer.schedule(bpmTask, 210, 210);
-		tcp_timer.schedule(tcp_task, 100, 100);
+		tcp_timer.schedule(tcp_task, 0, 50);
 		sendmsg_timer.schedule(sendmsg_task, 50, 100);
 	}
 	
@@ -204,7 +185,8 @@ public class GameActivity extends Activity {
 
 		return json.toString();
 	}
-
+	
+	//SEND the keys and notes only
 	public void sendMessage(String msg) { // BROADCAST MODE!
 		MyApplication app = (MyApplication) getApplication();
 	
@@ -228,7 +210,7 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	// Used to receive message from the middleman/DE2 BROADCAST MODE!
+	// RECEIVE message from the middleman/DE2
 	public class TCPReadTimerTask extends TimerTask {
 		public void run() {
 			MyApplication app = (MyApplication) getApplication();
@@ -245,21 +227,35 @@ public class GameActivity extends Activity {
 						// If so, read them in and create a sring
 						byte buf[] = new byte[bytes_avail];
 						in.read(buf);
-						int client_id = buf[1];
-
-						final String s = new String(buf, 2, bytes_avail-2, "US-ASCII");
-						Log.d("MyRcvdMessage", "Client:" + client_id + " Received: " + s);
-						JSONObject json = new JSONObject(s);
-
-						Log.d("MyRcvdMessage", "Instrument: " + json.getString(INSTRUMENT_JSON) + " Key: " + json.getString(KEY_JSON));
+						int message_type = buf[0];
 						
-						player0_instrument = json.getInt(INSTRUMENT_JSON);
-						player0_key = json.getInt(KEY_JSON);
-						tcp_updated = true;
+						if(message_type == MSG_TYPE_BROADCAST_KEYS){
+							int client_id = buf[1];
+							final String s = new String(buf, 2, bytes_avail-2, "US-ASCII");
+							Log.d("MyRcvdMessage", "Client:" + client_id + " Received: " + s);
+							JSONObject json = new JSONObject(s);
+	
+							Log.d("MyRcvdMessage", "Instrument: " + json.getString(INSTRUMENT_JSON) + " Key: " + json.getString(KEY_JSON));
+							
+							tcp_instruments.put(client_id, json.getInt(INSTRUMENT_JSON));
+							tcp_keys.put(client_id, json.getInt(KEY_JSON));
+							tcp_updated = true;
+						}
+						else if(message_type == MSG_TYPE_SET_SOUND_OUT){
+							instrument_volume = 1;
+							bpm_volume = (float)0.7;
+						}
+						else if(message_type == MSG_TYPE_MUTE){
+							instrument_volume = 0;
+							bpm_volume = 0;
+						}
+						
 					}
-				} catch (IOException e) {
+				} 
+				catch (IOException e) {
 					e.printStackTrace();
-				} catch (JSONException e) {
+				} 
+				catch (JSONException e) {
 					Log.d("MyRcvdError", "String to JSON conversion error!");
 					e.printStackTrace();
 				}
@@ -267,37 +263,63 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	// Used to receive message from the middleman/DE2
+	//PLAY notes (timer)
 	public class BPMTimerTask extends TimerTask {
 		public void run() {
 			Log.d("BPMTimerTask", "Playing note");
 			if(bassdrum_timer == 1){
-				soundpool.play(bassdrum, (float)0.7, (float)0.7, 0, 0, 1);	
+				soundpool.play(bassdrum, bpm_volume, bpm_volume, 0, 0, 1);	
 				bassdrum_timer=0;
 			}
 			else{
 				bassdrum_timer=1;
 			}
-			if(tcp_updated == true){
-				playSound(player0_key);
+			if(groupSession == true && tcp_updated == true){
+				for(int i = 0; i < tcp_keys.size(); i++) {
+					playSound(tcp_keys.valueAt(i), tcp_instruments.valueAt(i));
+				}
+				tcp_keys.clear();
+				tcp_instruments.clear();
 				tcp_updated = false;
 			}
-//			if (onTouch == true) {
-//				playSound(GameView.touchPosition);
-//				keyPressed = false;
-//			}
-//			else if (keyPressed == true){
-//				playSound(GameView.touchPosition);
-//				keyPressed = false;
-//			}
+			if (groupSession == false && onTouch == true) {
+				playSound(GameView.touchPosition, 0);
+				keyPressed = false;
+			}
+			else if (groupSession == false && keyPressed == true){
+				playSound(GameView.touchPosition, 0);
+				keyPressed = false;
+			}
 		}
 	}
 	
+	//SENDS messages from time to time
 	public class SendMsgTimerTask extends TimerTask {
 		public void run() {
 			if(onTouch == true){
 				sendMessage(composeMessage(my_instrument, my_key));
 			}
+		}
+	}
+	
+	//SETS the SOUND OUTPUT DEVICE
+	public void setDeviceSoundOutput(View view) {
+		MyApplication app = (MyApplication) getApplication();
+		
+		byte buf[] = new byte[1];
+		buf[0] = MSG_TYPE_SET_SOUND_OUT;
+
+		OutputStream out;
+		try {
+			out = app.sock.getOutputStream();
+			try {
+				out.write(buf, 0, 1);
+				out.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -309,42 +331,63 @@ public class GameActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	public void playSound(int touchPosition) {
+	
+	//PLAY notes depending on the instrument and key received
+	public void playSound(int touchPosition, int instrument) {
 		Log.d("PlaySound", "Key Pressed " + touchPosition);
+		switch(instrument){
+		case Instrument.Vec72:
+			pickVec72Note(touchPosition);
+			break;
+		case Instrument.Vec216:
+			pickVec216Note(touchPosition);
+			break;
+		case Instrument.Bass:
+			pickBassNote(touchPosition);
+			break;
+		case Instrument.Drums:
+			pickDrumsNote(touchPosition);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	//PLAY Vec72 notes
+	public void pickVec72Note(int touchPosition){
 		switch (touchPosition) {
 		case 0:
-			soundpool.play(vec72.note[10], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[10], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 1:
-			soundpool.play(vec72.note[9], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[9], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 2:
-			soundpool.play(vec72.note[8], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[8], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 3:
-			soundpool.play(vec72.note[7], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[7], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 4:
-			soundpool.play(vec72.note[6], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[6], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 5:
-			soundpool.play(vec72.note[5], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[5], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 6:
-			soundpool.play(vec72.note[4], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[4], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 7:
-			soundpool.play(vec72.note[3], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[3], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 8:
-			soundpool.play(vec72.note[2], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[2], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 9:
-			soundpool.play(vec72.note[1], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[1], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		case 10:
-			soundpool.play(vec72.note[0], 1, 1, 0, 0, 1);
+			soundpool.play(vec72.note[0], instrument_volume, instrument_volume, 0, 0, 1);
 			break;
 		default:
 			Log.d("PlaySound", "Redundant Key Pressed "
@@ -352,5 +395,134 @@ public class GameActivity extends Activity {
 			break;
 		}
 	}
-
+	
+	//PLAY Vec216 notes
+	public void pickVec216Note(int touchPosition){
+		switch (touchPosition) {
+		case 0:
+			soundpool.play(vec216.note[10], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 1:
+			soundpool.play(vec216.note[9], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 2:
+			soundpool.play(vec216.note[8], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 3:
+			soundpool.play(vec216.note[7], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 4:
+			soundpool.play(vec216.note[6], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 5:
+			soundpool.play(vec216.note[5], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 6:
+			soundpool.play(vec216.note[4], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 7:
+			soundpool.play(vec216.note[3], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 8:
+			soundpool.play(vec216.note[2], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 9:
+			soundpool.play(vec216.note[1], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 10:
+			soundpool.play(vec216.note[0], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		default:
+			Log.d("PlaySound", "Redundant Key Pressed "
+					+ GameView.touchPosition);
+			break;
+		}
+	}
+	
+	//PLAY bass notes
+	public void pickBassNote(int touchPosition){
+		switch (touchPosition) {
+		case 0:
+			soundpool.play(bass.note[10], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 1:
+			soundpool.play(bass.note[9], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 2:
+			soundpool.play(bass.note[8], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 3:
+			soundpool.play(bass.note[7], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 4:
+			soundpool.play(bass.note[6], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 5:
+			soundpool.play(bass.note[5], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 6:
+			soundpool.play(bass.note[4], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 7:
+			soundpool.play(bass.note[3], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 8:
+			soundpool.play(bass.note[2], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 9:
+			soundpool.play(bass.note[1], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 10:
+			soundpool.play(bass.note[0], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		default:
+			Log.d("PlaySound", "Redundant Key Pressed "
+					+ GameView.touchPosition);
+			break;
+		}
+	}
+	
+	// Play drums sounds
+	public void pickDrumsNote(int touchPosition){
+		switch (touchPosition) {
+		case 0:
+			soundpool.play(drums.note[10], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 1:
+			soundpool.play(drums.note[9], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 2:
+			soundpool.play(drums.note[8], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 3:
+			soundpool.play(drums.note[7], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 4:
+			soundpool.play(drums.note[6], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 5:
+			soundpool.play(drums.note[5], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 6:
+			soundpool.play(drums.note[4], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 7:
+			soundpool.play(drums.note[3], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 8:
+			soundpool.play(drums.note[2], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 9:
+			soundpool.play(drums.note[1], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		case 10:
+			soundpool.play(drums.note[0], instrument_volume, instrument_volume, 0, 0, 1);
+			break;
+		default:
+			Log.d("PlaySound", "Redundant Key Pressed "
+					+ GameView.touchPosition);
+			break;
+		}
+	}
+	
 }

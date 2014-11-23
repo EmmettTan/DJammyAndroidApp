@@ -41,4 +41,11 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	}
 	
+	public void debugLoop(View view){
+		Intent intent = new Intent(this, LoopActivity.class);
+		startActivity(intent);
+	}
+	
+	
+	
 }
