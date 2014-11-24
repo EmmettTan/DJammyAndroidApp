@@ -2,7 +2,6 @@ package com.example.songsequencerapp;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +12,9 @@ import android.widget.Toast;
 public class LoopSettings extends Activity {
 	
 	public static int beatNumber;
+	public static final String LOOP_ARRAY_KEY = "LOOP_ARRAY_KEY";
+	public static final String LOOP_ARRAY_SIZE = "LOOP_ARRAY_SIZE";
+	public static final String LOOP_ARRAY_FILE = "LOOP_ARRAY_FILE";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

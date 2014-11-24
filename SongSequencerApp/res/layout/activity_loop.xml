@@ -8,12 +8,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.songsequencerapp.LoopActivity" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
-
     <com.example.songsequencerapp.LoopView
         android:id="@+id/loopView1"
         android:layout_width="wrap_content"
@@ -24,10 +18,19 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="200dip"
-        android:minWidth="200dip"
-        android:layout_alignBottom="@+id/textView1"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:minHeight="10dip"
+        android:minWidth="180dip" />
+
+    <Button
+        android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="19dp" />
+        android:layout_alignParentTop="true"
+        android:onClick="saveLoop"
+        android:text="Save" />
 
 </RelativeLayout>

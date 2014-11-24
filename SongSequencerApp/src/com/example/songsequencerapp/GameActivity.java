@@ -3,6 +3,7 @@ package com.example.songsequencerapp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -11,10 +12,13 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.Settings.Global;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Display;
@@ -37,6 +41,10 @@ public class GameActivity extends Activity {
 	
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
+	
+	public int[] loopArray;
+	public boolean playLoop = true;
+	public int playPosition = 0;
 	
 	public Vec72 vec72;
 	public Vec216 vec216;
@@ -91,8 +99,10 @@ public class GameActivity extends Activity {
 		vec216.load(soundpool, getApplicationContext(), 0);
 		bass.load(soundpool, getApplicationContext(), 0);
 		drums.load(soundpool, getApplicationContext(), 0);
-		
 		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
+		
+		loopArray = new int[LoopActivity.globalLoopArray.length];
+		loopArray = LoopActivity.globalLoopArray.clone();
 	}
 
 	@Override
@@ -102,9 +112,9 @@ public class GameActivity extends Activity {
 		bpmTask = new BPMTimerTask();
 		sendmsg_task = new SendMsgTimerTask();
 		
-		bpm_timer.schedule(bpmTask, 210, 210);
-		tcp_timer.schedule(tcp_task, 0, 50);
-		sendmsg_timer.schedule(sendmsg_task, 50, 100);
+		bpm_timer.schedule(bpmTask, 1210, 210); //Wait at least one second before start!
+		tcp_timer.schedule(tcp_task, 1000, 50);
+		sendmsg_timer.schedule(sendmsg_task, 1050, 100);
 	}
 	
 	@Override
@@ -281,13 +291,20 @@ public class GameActivity extends Activity {
 				tcp_instruments.clear();
 				tcp_updated = false;
 			}
-			if (groupSession == false && onTouch == true) {
+			if (groupSession == false && (onTouch == true || keyPressed == true)) {
 				playSound(GameView.touchPosition, 0);
 				keyPressed = false;
 			}
-			else if (groupSession == false && keyPressed == true){
-				playSound(GameView.touchPosition, 0);
-				keyPressed = false;
+			if (playLoop == true){
+				if (playPosition < loopArray.length){
+					playSound(loopArray[playPosition], my_instrument);
+					playPosition++;
+				}
+				else{
+					playPosition = 0;
+					playSound(loopArray[playPosition], my_instrument);
+					playPosition++;
+				}
 			}
 		}
 	}
@@ -320,6 +337,11 @@ public class GameActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void playLoop(View view) {
+		//Do something
 	}
 	
 	@Override

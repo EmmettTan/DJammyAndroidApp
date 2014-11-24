@@ -4,10 +4,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -17,10 +20,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 public class LoopActivity extends Activity {
 
 	public int loopArray[];
+	public static int globalLoopArray[];
 	ProgressBar progress_bar;
 	int progress_percentage = 0;
 	int recordPosition = 0;
@@ -105,7 +110,17 @@ public class LoopActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
+	public void saveLoop(View view){
+		bpmTask.cancel();
+		
+		globalLoopArray = new int[loopArray.length];
+		globalLoopArray = loopArray.clone();
+		
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
+	
 	private int getKeyPosition(float y_pos) {
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
@@ -202,7 +217,7 @@ public class LoopActivity extends Activity {
 			break;
 		}
 	}
-
+	
 	// PLAY Vec72 notes
 	public void pickVec72Note(int touchPosition) {
 		switch (touchPosition) {

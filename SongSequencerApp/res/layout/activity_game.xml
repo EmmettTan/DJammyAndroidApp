@@ -20,5 +20,11 @@
      android:layout_width="wrap_content"
      android:text="@string/sound_button"
      android:onClick="setDeviceSoundOutput" />
+     
+     <Button
+     android:layout_height="wrap_content"
+     android:layout_width="wrap_content"
+     android:text="@string/play_loop_button"
+     android:onClick="playLoop" />
 
 </RelativeLayout>
