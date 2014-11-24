@@ -297,12 +297,12 @@ public class GameActivity extends Activity {
 			}
 			if (playLoop == true){
 				if (playPosition < loopArray.length){
-					playSound(loopArray[playPosition], my_instrument);
+					playSound(loopArray[playPosition], LoopActivity.loopInstrument);
 					playPosition++;
 				}
 				else{
 					playPosition = 0;
-					playSound(loopArray[playPosition], my_instrument);
+					playSound(loopArray[playPosition], LoopActivity.loopInstrument);
 					playPosition++;
 				}
 			}

@@ -49,7 +49,7 @@ public class LoopActivity extends Activity {
 	Timer bpm_timer;
 	BPMTimerTask bpmTask;
 
-	public int my_instrument = 3;
+	public static int loopInstrument = 3;
 	public int my_key;
 
 	@Override
@@ -172,7 +172,7 @@ public class LoopActivity extends Activity {
 			}
 			if (startRecording && recordPosition < LoopSettings.beatNumber){
 				if (onTouch == true || keyPressed == true) {
-					playSound(LoopView.touchPosition, my_instrument);
+					playSound(LoopView.touchPosition, loopInstrument);
 					keyPressed = false;
 					loopArray[recordPosition] = LoopView.touchPosition;
 				}
@@ -185,12 +185,12 @@ public class LoopActivity extends Activity {
 			}
 			else if (startRecording){
 				if (playPosition < LoopSettings.beatNumber){
-					playSound(loopArray[playPosition], my_instrument);
+					playSound(loopArray[playPosition], loopInstrument);
 					playPosition++;
 				}
 				else{
 					playPosition = 0;
-					playSound(loopArray[playPosition], my_instrument);
+					playSound(loopArray[playPosition], loopInstrument);
 					playPosition++;
 				}
 			}
