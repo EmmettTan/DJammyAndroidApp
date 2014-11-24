@@ -345,8 +345,6 @@ public class GameActivity extends Activity {
 	public void playLoop(View view) {
 		playLoop = !playLoop;
 		playPosition = 0;
-//		Toast t = Toast.makeText(getApplicationContext(), "This button is doing nothing yet", Toast.LENGTH_LONG);
-//		t.show();
 	}
 
 	@Override
