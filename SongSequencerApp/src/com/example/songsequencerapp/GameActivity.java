@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class GameActivity extends Activity {
 
@@ -42,7 +43,7 @@ public class GameActivity extends Activity {
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
 	
-	public int[] loopArray;
+	public int[] loopArray = null;
 	public boolean playLoop = true;
 	public int playPosition = 0;
 	
@@ -101,8 +102,10 @@ public class GameActivity extends Activity {
 		drums.load(soundpool, getApplicationContext(), 0);
 		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
 		
-		loopArray = new int[LoopActivity.globalLoopArray.length];
-		loopArray = LoopActivity.globalLoopArray.clone();
+		if (LoopActivity.globalLoopArray != null){
+			loopArray = new int[LoopActivity.globalLoopArray.length];
+			loopArray = LoopActivity.globalLoopArray.clone();
+		}
 	}
 
 	@Override
@@ -295,7 +298,7 @@ public class GameActivity extends Activity {
 				playSound(GameView.touchPosition, 0);
 				keyPressed = false;
 			}
-			if (playLoop == true){
+			if (playLoop == true && loopArray != null){
 				if (playPosition < loopArray.length){
 					playSound(loopArray[playPosition], LoopActivity.loopInstrument);
 					playPosition++;
@@ -341,7 +344,8 @@ public class GameActivity extends Activity {
 	
 	
 	public void playLoop(View view) {
-		//Do something
+		Toast t = Toast.makeText(getApplicationContext(), "This button is doing nothing yet", Toast.LENGTH_LONG);
+		t.show();
 	}
 	
 	@Override

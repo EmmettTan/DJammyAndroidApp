@@ -25,6 +25,7 @@
      android:layout_height="wrap_content"
      android:layout_width="wrap_content"
      android:text="@string/play_loop_button"
-     android:onClick="playLoop" />
+     android:onClick="playLoop"
+     android:layout_alignParentRight="true" />
 
 </RelativeLayout>

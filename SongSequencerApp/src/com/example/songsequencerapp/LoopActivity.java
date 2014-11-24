@@ -25,7 +25,7 @@ import android.widget.Toast;
 public class LoopActivity extends Activity {
 
 	public int loopArray[];
-	public static int globalLoopArray[];
+	public static int globalLoopArray[] = null;
 	ProgressBar progress_bar;
 	int progress_percentage = 0;
 	int recordPosition = 0;
