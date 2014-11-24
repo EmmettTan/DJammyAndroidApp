@@ -63,7 +63,7 @@ public class MiddlemanConnection extends Activity {
 			msgbox.setText("Socket already open");
 			GameActivity.groupSession = true;
 			Intent intent = new Intent(MiddlemanConnection.this,
-					GameActivity.class);
+					SettingsMenu.class);
 			startActivity(intent);
 		}
 		else{
@@ -91,7 +91,7 @@ public class MiddlemanConnection extends Activity {
 				"Skipping... Not connected", Toast.LENGTH_LONG);
 		t.show();
 		GameActivity.groupSession = false;
-		Intent intent = new Intent(MiddlemanConnection.this, GameActivity.class);
+		Intent intent = new Intent(MiddlemanConnection.this, SettingsMenu.class);
 		startActivity(intent);
 	}
 
@@ -185,7 +185,7 @@ public class MiddlemanConnection extends Activity {
 				
 				GameActivity.groupSession = true;
 				Intent intent = new Intent(MiddlemanConnection.this,
-						GameActivity.class);
+						SettingsMenu.class);
 				startActivity(intent);
 
 			} else {
