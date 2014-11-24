@@ -15,7 +15,6 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SettingsMenu extends Activity implements OnSeekBarChangeListener, OnItemSelectedListener {
 	public static final int tempo_start = 200;
