@@ -39,7 +39,7 @@ public class GameActivity extends Activity {
 	boolean keyPressed = false;
 
 	public int[] loopArray = null;
-	public boolean playLoop = true;
+	public boolean playLoop = false;
 	public int playPosition = 0;
 	
 	public Vec72 vec72;
@@ -343,8 +343,10 @@ public class GameActivity extends Activity {
 	}
 
 	public void playLoop(View view) {
-		Toast t = Toast.makeText(getApplicationContext(), "This button is doing nothing yet", Toast.LENGTH_LONG);
-		t.show();
+		playLoop = !playLoop;
+		playPosition = 0;
+//		Toast t = Toast.makeText(getApplicationContext(), "This button is doing nothing yet", Toast.LENGTH_LONG);
+//		t.show();
 	}
 
 	@Override
