@@ -71,4 +71,6 @@ public abstract class Instrument {
 		note[9] = soundpool.load(context, note_ID[9], 1);
 		note[10] = soundpool.load(context, note_ID[10], 1);
 	}
+	
+	
 }

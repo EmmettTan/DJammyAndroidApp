@@ -36,11 +36,11 @@
         <activity
             android:name=".GameActivity"
             android:label="@string/title_activity_game"
-            android:parentActivityName=".MainActivity" 
+            android:parentActivityName=".SettingsMenu" 
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.songsequencerapp.MainActivity" />
+                android:value="com.example.songsequencerapp.SettingsMenu" />
         </activity>
         <activity
             android:name=".SettingsMenu"

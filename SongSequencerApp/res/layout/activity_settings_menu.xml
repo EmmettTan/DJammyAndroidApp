@@ -32,8 +32,8 @@
         android:text="@string/ChooseTune"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup1"
+    <LinearLayout
+        android:id="@+id/LinearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:onClick="setInstrument"
-            android:text="@string/Synth1" />
+            android:text="@string/Synth4" />
 
         <RadioButton
             android:id="@+id/radio1"
@@ -56,15 +56,16 @@
             android:id="@+id/radio2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-           android:onClick="setInstrument"
+            android:onClick="setInstrument"
             android:text="@string/Synth3" />
+
         <RadioButton
             android:id="@+id/radio3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-           android:onClick="setInstrument"
-            android:text="@string/Synth4" />
-    </RadioGroup>
+            android:onClick="setInstrument"
+            android:text="@string/Synth1" />
+    </LinearLayout>
 
     <Space
         android:layout_width="match_parent"

@@ -27,10 +27,10 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="Setting">Settings</string>
     <string name="ChooseTune">Choose Your Tune:</string>
-    <string name="Synth1">Red</string>
-    <string name="Synth2">Blue</string>
-    <string name="Synth3">Green</string>
-    <string name="Synth4">Yellow</string>
+    <string name="Synth1">Drum</string>
+    <string name="Synth2">Bass</string>
+    <string name="Synth3">Xylo</string>
+    <string name="Synth4">Strings</string>
     <string name="ChooseKey">Choose Key:</string>
     <string name="title_activity_settings_menu">SettingsMenu</string>
     <string name="Done">Done</string>
