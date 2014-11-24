@@ -65,6 +65,10 @@ public class GameActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.activity_game);
 		
 		drums = new Drums();
 		vec72 = new Vec72();
@@ -73,11 +77,6 @@ public class GameActivity extends Activity {
 		vec216.init(vec216.KEY_OF_B);	
 		bass = new Bass();
 		bass.init(bass.KEY_OF_B);
-		
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		setContentView(R.layout.activity_game);
 		
 		bpm_timer = new Timer();
 		sendmsg_timer = new Timer();

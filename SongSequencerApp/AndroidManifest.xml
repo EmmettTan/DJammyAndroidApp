@@ -36,8 +36,8 @@
         <activity
             android:name=".GameActivity"
             android:label="@string/title_activity_game"
-            android:parentActivityName=".MainActivity" 
-            android:screenOrientation="portrait">
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.songsequencerapp.MainActivity" />
@@ -52,7 +52,16 @@
         </activity>
         <activity
             android:name=".LoopActivity"
-            android:label="@string/title_activity_loop" >
+            android:label="@string/title_activity_loop"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".LoopSettings"
+            android:label="@string/title_activity_loop_settings"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.songsequencerapp.MainActivity" />
         </activity>
     </application>
 

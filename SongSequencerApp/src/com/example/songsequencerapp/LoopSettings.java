@@ -2,23 +2,28 @@ package com.example.songsequencerapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class LoopSettings extends Activity {
+	
+	public static int beatNumber;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_loop_settings);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.loop_settings, menu);
 		return true;
 	}
 
@@ -34,18 +39,19 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	public void startGame(View view) {
-		//Toast t = Toast.makeText(getApplicationContext(),"Start Game!!", Toast.LENGTH_LONG);
-		//t.show();
-		Intent intent = new Intent(this, MiddlemanConnection.class);
-		startActivity(intent);
+	public void recordLoop(View view){
+		EditText beats_value;
+		beats_value = (EditText) findViewById(R.id.editText1);
+		beatNumber = Integer.parseInt(beats_value.getText().toString()) * 4;
+		if (beatNumber > 0){
+			Toast t = Toast.makeText(getApplicationContext(), "Press any key to start recording", Toast.LENGTH_LONG);
+			t.show();
+			Intent intent = new Intent(this, LoopActivity.class);
+			startActivity(intent);
+		}
+		else{
+			Toast t = Toast.makeText(getApplicationContext(), "Beats Divisions should be greater than 0", Toast.LENGTH_LONG);
+			t.show();
+		}
 	}
-	
-	public void debugLoop(View view){
-		Intent intent = new Intent(this, LoopSettings.class);
-		startActivity(intent);
-	}
-	
-	
-	
 }
