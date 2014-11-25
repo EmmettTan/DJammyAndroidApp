@@ -80,9 +80,8 @@ public class GameActivity extends Activity {
 		vec72 = new Vec72();
 		vec216 = new Vec216();
 		bass = new Bass();
-		bass.init(bass.KEY_OF_B);
 		
-		my_instrument= SettingsMenu.getInstrument();
+		my_instrument = SettingsMenu.getInstrument();
 		initKey(SettingsMenu.getKey());
 
 		bpm_timer = new Timer();

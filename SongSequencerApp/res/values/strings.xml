@@ -27,7 +27,7 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="Setting">Settings</string>
     <string name="ChooseTune">Choose Your Tune:</string>
-    <string name="Synth1">Drum</string>
+    <string name="Synth1">Drums</string>
     <string name="Synth2">Bass</string>
     <string name="Synth3">Xylo</string>
     <string name="Synth4">Strings</string>
