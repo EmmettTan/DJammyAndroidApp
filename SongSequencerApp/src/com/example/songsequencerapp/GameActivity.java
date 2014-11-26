@@ -6,9 +6,6 @@ import java.io.OutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.graphics.Point;
 import android.media.AudioManager;
@@ -26,8 +23,8 @@ import android.view.WindowManager;
 
 public class GameActivity extends Activity {
 
-	public final String KEY_JSON = "K";
-	public final String INSTRUMENT_JSON = "I";
+//	public final String KEY_JSON = "K";
+//	public final String INSTRUMENT_JSON = "I";
 	public static final byte MSG_TYPE_BROADCAST_KEYS = 1;
 	public static final byte MSG_TYPE_SET_SOUND_OUT = 2;
 	public static final byte MSG_TYPE_MUTE = 3;
@@ -173,36 +170,36 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	// Compose message before sending
-	private String composeMessage(int instrument, int key) {
-		JSONObject json = new JSONObject();
-
-		try {
-			json.put(INSTRUMENT_JSON, instrument);
-			json.put(KEY_JSON, key);
-		} catch (JSONException e) {
-			Log.d("MyError", "Error putting in JSON!");
-			e.printStackTrace();
-		}
-
-		return json.toString();
-	}
+//	// Compose message before sending
+//	private String composeMessage(int instrument, int key) {
+//		JSONObject json = new JSONObject();
+//
+//		try {
+//			json.put(INSTRUMENT_JSON, instrument);
+//			json.put(KEY_JSON, key);
+//		} catch (JSONException e) {
+//			Log.d("MyError", "Error putting in JSON!");
+//			e.printStackTrace();
+//		}
+//
+//		return json.toString();
+//	}
 
 	// SEND the keys and notes only
-	public void sendMessage(String msg) { // BROADCAST MODE!
+	public void sendMessage(int instrument, int key) { // BROADCAST MODE!
 		MyApplication app = (MyApplication) getApplication();
 
-		byte buf[] = new byte[msg.length() + 2];
+		byte buf[] = new byte[4];
 		buf[0] = MSG_TYPE_BROADCAST_KEYS;
 		buf[1] = 0; // Allocate space for the client id
-
-		System.arraycopy(msg.getBytes(), 0, buf, 2, msg.length());
+		buf[2] = (byte) instrument;
+		buf[3] = (byte) key;
 
 		OutputStream out;
 		try {
 			out = app.sock.getOutputStream();
 			try {
-				out.write(buf, 0, msg.length() + 2);
+				out.write(buf, 0, 4);
 				out.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -233,21 +230,13 @@ public class GameActivity extends Activity {
 
 						if (message_type == MSG_TYPE_BROADCAST_KEYS) {
 							int client_id = buf[1];
-							final String s = new String(buf, 2,
-									bytes_avail - 2, "US-ASCII");
-							Log.d("MyRcvdMessage", "Client:" + client_id
-									+ " Received: " + s);
-							JSONObject json = new JSONObject(s);
+							int received_instrument = buf[2];
+							int received_key = buf[3];
 
-							Log.d("MyRcvdMessage",
-									"Instrument: "
-											+ json.getString(INSTRUMENT_JSON)
-											+ " Key: "
-											+ json.getString(KEY_JSON));
+							Log.d("MyRcvdMessage", "Instrument: "+ received_instrument + " Key: " + received_key);
 
-							tcp_instruments.put(client_id,
-									json.getInt(INSTRUMENT_JSON));
-							tcp_keys.put(client_id, json.getInt(KEY_JSON));
+							tcp_instruments.put(client_id, received_instrument);
+							tcp_keys.put(client_id, received_key);
 							tcp_updated = true;
 						} else if (message_type == MSG_TYPE_SET_SOUND_OUT) {
 							instrument_volume = 1;
@@ -261,9 +250,6 @@ public class GameActivity extends Activity {
 
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (JSONException e) {
-					Log.d("MyRcvdError", "String to JSON conversion error!");
 					e.printStackTrace();
 				}
 			}
@@ -310,7 +296,7 @@ public class GameActivity extends Activity {
 	public class SendMsgTimerTask extends TimerTask {
 		public void run() {
 			if (onTouch == true) {
-				sendMessage(composeMessage(my_instrument, my_key));
+				sendMessage(my_instrument, my_key);
 			}
 		}
 	}
