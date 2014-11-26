@@ -200,7 +200,7 @@ public class GameActivity extends Activity {
 			out = app.sock.getOutputStream();
 			try {
 				out.write(buf, 0, 4);
-				out.flush();
+				//out.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
