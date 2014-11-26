@@ -86,7 +86,7 @@ public class SettingsMenu extends Activity implements OnSeekBarChangeListener, O
 	}
 
 	public void start_session(View view) {
-
+		sendStartGameMessage();
 		Intent intent = new Intent(this, GameActivity.class);
 		startActivity(intent);
 	}
@@ -170,9 +170,28 @@ public class SettingsMenu extends Activity implements OnSeekBarChangeListener, O
 		key="Gb/A#";
 	}
 	
+	public void sendStartGameMessage() {
+		MyApplication app = (MyApplication) getApplication();
+
+		byte buf[] = new byte[1];
+		buf[0] = GameActivity.MSG_TYPE_START_GAME;
+		
+		OutputStream out;
+		try {
+			out = app.sock.getOutputStream();
+			try {
+				out.write(buf, 0, 1);
+				out.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	// SETS the SOUND OUTPUT DEVICE
 	public void setDeviceSoundOutput(View view) {
-
 		Toast t = Toast.makeText(getApplicationContext(), "You're the host now!", Toast.LENGTH_LONG);
 		t.show();
 		

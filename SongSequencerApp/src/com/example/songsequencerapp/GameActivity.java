@@ -31,6 +31,7 @@ public class GameActivity extends Activity {
 	public static final byte MSG_TYPE_BROADCAST_KEYS = 1;
 	public static final byte MSG_TYPE_SET_SOUND_OUT = 2;
 	public static final byte MSG_TYPE_MUTE = 3;
+	public static final byte MSG_TYPE_START_GAME = 10;
 
 	public static boolean groupSession = true; // If false, individual session is set
 	public static boolean onTouch = false;
@@ -111,8 +112,8 @@ public class GameActivity extends Activity {
 		sendmsg_task = new SendMsgTimerTask();
 
 		bpm_timer.schedule(bpmTask, 0, SettingsMenu.getTempo());
-		tcp_timer.schedule(tcp_task, 0, 50);
-		sendmsg_timer.schedule(sendmsg_task, 50, 100);
+		tcp_timer.schedule(tcp_task, 0, SettingsMenu.getTempo()/3);
+		sendmsg_timer.schedule(sendmsg_task, 5, SettingsMenu.getTempo()/3);
 	}
 
 	@Override
