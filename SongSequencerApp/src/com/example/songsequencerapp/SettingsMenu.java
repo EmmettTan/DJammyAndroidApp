@@ -25,9 +25,9 @@ public class SettingsMenu extends Activity implements OnSeekBarChangeListener, O
 	public static final int tempo_size = 40;
 	private static int Tempo=tempo_start;
 	private static String key;
-	private static int instrument;
-	public static float bpm_volume;
-	
+	private static int instrument = 0;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,13 +99,13 @@ public class SettingsMenu extends Activity implements OnSeekBarChangeListener, O
 		Log.d("Button", "The Button " + temp);
 
 		if (temp.compareTo("Bass") == 0)
-			instrument = 0;
-		else if (temp.compareTo("Drums") == 0)
-			instrument = 1;
-		else if (temp.compareTo("Xylo") == 0)
 			instrument = 2;
-		else
+		else if (temp.compareTo("Drums") == 0)
 			instrument = 3;
+		else if (temp.compareTo("Xylo") == 0)
+			instrument = 1;
+		else if((temp.compareTo("Strings") == 0))
+			instrument = 0;
 		
 		Log.d("instrument", "instrument " + instrument);
 	}
