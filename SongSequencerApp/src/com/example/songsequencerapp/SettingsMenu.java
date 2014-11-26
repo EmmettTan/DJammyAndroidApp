@@ -1,5 +1,8 @@
 package com.example.songsequencerapp;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +15,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,6 +26,7 @@ public class SettingsMenu extends Activity implements OnSeekBarChangeListener, O
 	private static int Tempo=tempo_start;
 	private static String key;
 	private static int instrument = 0;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +168,31 @@ public class SettingsMenu extends Activity implements OnSeekBarChangeListener, O
 	public void onNothingSelected(AdapterView<?> parent) {
 		// TODO Auto-generated method stub
 		key="Gb/A#";
+	}
+	
+	// SETS the SOUND OUTPUT DEVICE
+	public void setDeviceSoundOutput(View view) {
+
+		Toast t = Toast.makeText(getApplicationContext(), "You're the host now!", Toast.LENGTH_LONG);
+		t.show();
+		
+		MyApplication app = (MyApplication) getApplication();
+
+		byte buf[] = new byte[1];
+		buf[0] = GameActivity.MSG_TYPE_SET_SOUND_OUT;
+		
+		OutputStream out;
+		try {
+			out = app.sock.getOutputStream();
+			try {
+				out.write(buf, 0, 1);
+				out.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

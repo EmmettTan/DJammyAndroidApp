@@ -55,14 +55,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="setInstrument"
-            android:text="@string/Synth2" />
+            android:text="@string/Synth3" />
 
         <RadioButton
             android:id="@+id/radio2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="setInstrument"
-            android:text="@string/Synth3" />
+            android:text="@string/Synth2" />
 
         <RadioButton
             android:id="@+id/radio3"
@@ -116,8 +116,24 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btnSubmit"
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="setDeviceSoundOutput"
+        android:text="Steal Sound"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView5"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click to play music from your device"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="italic" />
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="start_session"
         android:text="@string/Done"
