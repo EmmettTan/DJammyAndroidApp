@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -24,15 +23,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 public class GameActivity extends Activity {
 
 	public final String KEY_JSON = "K";
 	public final String INSTRUMENT_JSON = "I";
-	public final byte MSG_TYPE_BROADCAST_KEYS = 1;
-	public final byte MSG_TYPE_SET_SOUND_OUT = 2;
-	public final byte MSG_TYPE_MUTE = 3;
+	public static final byte MSG_TYPE_BROADCAST_KEYS = 1;
+	public static final byte MSG_TYPE_SET_SOUND_OUT = 2;
+	public static final byte MSG_TYPE_MUTE = 3;
 
 	public static boolean groupSession = true; // If false, individual session is set
 	public static boolean onTouch = false;
@@ -51,7 +49,7 @@ public class GameActivity extends Activity {
 	public int bassdrum_timer = 0;
 	SoundPool soundpool;
 	float instrument_volume = 1;
-	float bpm_volume = (float) 0.7;
+	float bpm_volume =(float) 0.7;
 
 	Timer bpm_timer;
 	Timer tcp_timer;
@@ -131,12 +129,6 @@ public class GameActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.game, menu);
 		return true;
-	}
-
-	@Override
-	public void onBackPressed() {
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
 	}
 
 	private int getKeyPosition(float y_pos) {
@@ -260,9 +252,11 @@ public class GameActivity extends Activity {
 						} else if (message_type == MSG_TYPE_SET_SOUND_OUT) {
 							instrument_volume = 1;
 							bpm_volume = (float) 0.7;
+							Log.d("SoundThing", "Sound On!!");
 						} else if (message_type == MSG_TYPE_MUTE) {
 							instrument_volume = 0;
 							bpm_volume = 0;
+							Log.d("SoundThing", "Sound Mute!!");
 						}
 
 					}
@@ -318,27 +312,6 @@ public class GameActivity extends Activity {
 			if (onTouch == true) {
 				sendMessage(composeMessage(my_instrument, my_key));
 			}
-		}
-	}
-
-	// SETS the SOUND OUTPUT DEVICE
-	public void setDeviceSoundOutput(View view) {
-		MyApplication app = (MyApplication) getApplication();
-
-		byte buf[] = new byte[1];
-		buf[0] = MSG_TYPE_SET_SOUND_OUT;
-
-		OutputStream out;
-		try {
-			out = app.sock.getOutputStream();
-			try {
-				out.write(buf, 0, 1);
-				out.flush();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
