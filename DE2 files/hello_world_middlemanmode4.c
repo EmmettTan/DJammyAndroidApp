@@ -2,6 +2,7 @@
 #include "altera_up_avalon_usb.h"
 #include "system.h"
 #include "sys/alt_timestamp.h"
+#include "io.h"
 
 #include <assert.h>
 
@@ -9,6 +10,11 @@
 #define MSG_TYPE_BROADCAST_KEYS 1
 #define MSG_TYPE_SET_SOUND_OUT 2
 #define MSG_TYPE_MUTE 3
+#define MSG_TYPE_LIGHTS 4
+#define pins (volatile char *) 0x1030
+#define color_green 0x01
+#define color_red 0x02
+#define color_blue 0x04
 
 void usb_initialization();
 struct packet receive_message(unsigned char *message, struct packet packet);
@@ -16,6 +22,7 @@ void send_message(unsigned char *message, struct packet packet);
 void clean_message(unsigned char *message);
 void broadcast_keys(unsigned char *message, struct packet packet, unsigned char receiver_client);
 void set_master_device(struct packet packet, unsigned char *receiver_client);
+void switch_light_color(void);
 
 struct packet{
 	unsigned char id;
@@ -63,6 +70,34 @@ void usb_initialization() {
 		usb_device_poll();
 	}
 	printf("Done polling USB\n");
+}
+
+void switch_light_color(void) {
+
+
+	switch (*pins) {
+	case (color_red + color_blue + color_green):
+		IOWR_32DIRECT(pins, 0, color_green);
+		break;
+	case color_green:
+		IOWR_32DIRECT(pins, 0, color_red);
+		break;
+	case color_red:
+		IOWR_32DIRECT(pins, 0, color_blue);
+		break;
+	case color_blue:
+		IOWR_32DIRECT(pins, 0, color_green+color_blue);
+		break;
+	case (color_green+color_blue):
+		IOWR_32DIRECT(pins, 0, color_red + color_blue);
+		break;
+	case (color_red + color_blue):
+		IOWR_32DIRECT(pins, 0, color_red + color_green);
+		break;
+	default:
+		IOWR_32DIRECT(pins, 0, color_red + color_blue + color_green);
+		break;
+	}
 }
 
 struct packet receive_message(unsigned char *message, struct packet packet) {
