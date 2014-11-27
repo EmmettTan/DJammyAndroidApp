@@ -27,6 +27,7 @@ public class GameActivity extends Activity {
 	public static final byte MSG_TYPE_SET_SOUND_OUT = 2;
 	public static final byte MSG_TYPE_MUTE = 3;
 	public static final byte MSG_TYPE_START_GAME = 10;
+	public static final byte MSG_TYPE_BPM = 11;
 	
 	public static boolean groupSession = true; // If false, individual session is set
 	public static boolean onTouch = false;
@@ -250,6 +251,27 @@ public class GameActivity extends Activity {
 			}
 		}
 	}
+	
+	// SEND the BPM beats to the DE2
+	public void sendBPMMessage() {
+		MyApplication app = (MyApplication) getApplication();
+
+		byte buf[] = new byte[1];
+		buf[0] = MSG_TYPE_BPM;
+
+		OutputStream out;
+		try {
+			out = app.sock.getOutputStream();
+			try {
+				out.write(buf, 0, 1);
+				out.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	// PLAY notes (timer)
 	public class BPMTimerTask extends TimerTask {
@@ -258,6 +280,7 @@ public class GameActivity extends Activity {
 			if (bassdrum_timer == 1) {
 				soundpool.play(bassdrum, bpm_volume, bpm_volume, 0, 0, 1);
 				bassdrum_timer = 0;
+				sendBPMMessage();
 			} else {
 				bassdrum_timer = 1;
 			}

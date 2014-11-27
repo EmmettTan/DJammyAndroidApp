@@ -11,6 +11,9 @@
 #define MSG_TYPE_SET_SOUND_OUT 2
 #define MSG_TYPE_MUTE 3
 #define MSG_TYPE_LIGHTS 4
+#define MSG_TYPE_START_GAME 10
+#define MSG_TYPE_BPM 11
+
 #define pins (volatile char *) 0x1030
 #define color_green 0x01
 #define color_red 0x02
@@ -19,10 +22,11 @@
 void usb_initialization();
 struct packet receive_message(unsigned char *message, struct packet packet);
 void send_message(unsigned char *message, struct packet packet);
-void clean_message(unsigned char *message);
 void broadcast_keys(unsigned char *message, struct packet packet, unsigned char receiver_client);
 void set_master_device(struct packet packet, unsigned char *receiver_client);
 void switch_light_color(void);
+void check_for_master(struct packet packet, unsigned char receiver_client);
+void check_for_concat_messages(unsigned char *message, struct packet packet, unsigned char receiver_client);
 
 struct packet{
 	unsigned char id;
@@ -34,6 +38,7 @@ int main() {
 	unsigned char message[MSG_LENGTH];
 	struct packet packet;
 	unsigned char receiver_client = 255; //255 means broadcast
+
 	usb_initialization();
 
 	while (1) {
@@ -41,15 +46,23 @@ int main() {
 		switch(packet.type){
 			case MSG_TYPE_BROADCAST_KEYS:
 				broadcast_keys(message, packet, receiver_client); // broadcast keys
+				//check_for_concat_messages(message, packet, receiver_client);
 				break;
 			case MSG_TYPE_SET_SOUND_OUT:
 				set_master_device(packet, &receiver_client);
+				break;
+			case MSG_TYPE_START_GAME:
+				check_for_master(packet, receiver_client);
+				break;
+			case MSG_TYPE_BPM:
+				switch_light_color();
+				//check_for_concat_messages(message, packet, receiver_client);
 				break;
 			default:
 				printf("MESSAGE TYPE NOT RECOGNIZED!");
 				break;
 		}
-//		clean_message(message);
+
 	}
 
 	return 0;
@@ -73,8 +86,6 @@ void usb_initialization() {
 }
 
 void switch_light_color(void) {
-
-
 	switch (*pins) {
 	case (color_red + color_blue + color_green):
 		IOWR_32DIRECT(pins, 0, color_green);
@@ -97,6 +108,22 @@ void switch_light_color(void) {
 	default:
 		IOWR_32DIRECT(pins, 0, color_red + color_blue + color_green);
 		break;
+	}
+}
+
+void check_for_concat_messages(unsigned char *message, struct packet packet, unsigned char receiver_client){
+
+	if( (packet.msgsize > 1 && packet.type == MSG_TYPE_BPM) || (packet.msgsize > 4 && packet.type == MSG_TYPE_BROADCAST_KEYS)){
+		int msg_length = packet.msgsize;
+		packet.type = MSG_TYPE_BROADCAST_KEYS;
+		packet.msgsize = 4;
+		broadcast_keys(&message[msg_length-1],packet, receiver_client);
+//		printf("\nMessage Echo Complete: \n");
+//		int i;
+//		for (i = 0; i < packet.msgsize; i++) {
+//			printf("%d - ", message[msg_length-4+i]);
+//		}
+//		printf("\n");
 	}
 }
 
@@ -159,6 +186,14 @@ struct packet receive_message(unsigned char *message, struct packet packet) {
 	return packet;
 }
 
+void check_for_master(struct packet packet, unsigned char receiver_client){
+	if (receiver_client != packet.id && receiver_client != 255){ // if there is a master mutes the phone
+		packet.type = MSG_TYPE_MUTE;
+		send_message("", packet);
+	}
+}
+
+
 void set_master_device(struct packet packet, unsigned char *receiver_client){
 	unsigned char master_id = packet.id;
 	packet.id = master_id;
@@ -189,19 +224,6 @@ void send_message(unsigned char *message, struct packet packet) {
 
 //	printf("Sending the message to the Middleman\n");
 	usb_device_send(clientmsg, message_length);
-//	printf("Message Echo Complete: \n");
-//	for (i = 0; i < message_length; i++) {
-//		printf("%c", clientmsg[i]);
-//	}
-//	printf("\n");
-}
-
-void clean_message(unsigned char *message) {
-	int i;
-	for (i = 0; i < MSG_LENGTH; i++) {
-		message[i] = '\0';
-	}
-//	printf("cleaned buffer\n");
 }
 
 
