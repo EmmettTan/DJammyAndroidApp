@@ -77,10 +77,14 @@ public class GameActivity extends Activity {
 		setContentView(R.layout.activity_game);
 		
 		if (LoopActivity.globalLoopArray.size() >= 4 ){
-			loopArray1 = LoopActivity.globalLoopArray.get(1).clone();
-			loopArray2 = LoopActivity.globalLoopArray.get(2).clone();
-			loopArray3 = LoopActivity.globalLoopArray.get(3).clone();
-			loopArray4 = LoopActivity.globalLoopArray.get(4).clone();
+			loopArray1 = new int [LoopActivity.globalLoopArray.get(0).length];
+			loopArray2 = new int [LoopActivity.globalLoopArray.get(1).length];
+			loopArray3 = new int [LoopActivity.globalLoopArray.get(2).length];
+			loopArray4 = new int [LoopActivity.globalLoopArray.get(3).length];
+			loopArray1 = LoopActivity.globalLoopArray.get(0).clone();
+			loopArray2 = LoopActivity.globalLoopArray.get(1).clone();
+			loopArray3 = LoopActivity.globalLoopArray.get(2).clone();
+			loopArray4 = LoopActivity.globalLoopArray.get(3).clone();
 		}
 		
 		drums = new Drums();
@@ -98,7 +102,7 @@ public class GameActivity extends Activity {
 		tcp_instruments = new SparseIntArray();
 		tcp_keys = new SparseIntArray();
 
-		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+		soundpool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
 
 		vec72.load(soundpool, getApplicationContext(), 0);
 		vec216.load(soundpool, getApplicationContext(), 0);

@@ -16,16 +16,20 @@ import android.widget.Toast;
 public class SettingsMenu extends Activity{
 
 	private static int instrument = 0;
-	public static boolean playLoop1 = false;
-	public static boolean playLoop2 = false;
-	public static boolean playLoop3 = false;
-	public static boolean playLoop4 = false;
+	public static boolean playLoop1;
+	public static boolean playLoop2;
+	public static boolean playLoop3;
+	public static boolean playLoop4;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings_menu);
+		playLoop1 = false;
+		playLoop2 = false;
+		playLoop3 = false;
+		playLoop4 = false;
 
 	}
 
@@ -129,6 +133,7 @@ public class SettingsMenu extends Activity{
 			e.printStackTrace();
 		}
 	}
+	
 	public void setLoop1(View view){
 		playLoop1=!playLoop1;
 		

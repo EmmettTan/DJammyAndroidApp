@@ -48,11 +48,11 @@ public class LoopActivity extends Activity {
 	Timer bpm_timer;
 	BPMTimerTask bpmTask;
 
-	public static int currentloopInstrument = SettingsMenu.getInstrument();
-	public static int loopInstrument1 = SettingsMenu.getInstrument();
-	public static int loopInstrument2 = SettingsMenu.getInstrument();
-	public static int loopInstrument3 = SettingsMenu.getInstrument();
-	public static int loopInstrument4 = SettingsMenu.getInstrument();
+	public static int currentloopInstrument = 0;
+	public static int loopInstrument1 = 0;
+	public static int loopInstrument2 = 0;
+	public static int loopInstrument3 = 0;
+	public static int loopInstrument4 = 0;
 	public int my_key;
 
 	@Override
@@ -138,8 +138,8 @@ public class LoopActivity extends Activity {
 	}
 	
 	public void saveLoop(View view){
-		//bpmTask.cancel();
-		
+		bpmTask.cancel();
+		Log.d("Loop", "Index: " + index + " Instrument: " + currentloopInstrument + " Array: " + loopArray);
 		globalLoopArray.add(index, loopArray.clone());
 		
 		Intent intent = new Intent(this, SettingsMenu.class);
