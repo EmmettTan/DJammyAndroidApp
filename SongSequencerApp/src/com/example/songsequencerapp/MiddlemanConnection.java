@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -82,7 +83,7 @@ public class MiddlemanConnection extends Activity implements OnItemSelectedListe
 	
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
+		//super.onBackPressed();
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
@@ -102,9 +103,12 @@ public class MiddlemanConnection extends Activity implements OnItemSelectedListe
 		if (app.sock != null && app.sock.isConnected() && !app.sock.isClosed()) {
 			msgbox.setText("Socket already open");
 			GameActivity.groupSession = true;
-			Intent intent = new Intent(MiddlemanConnection.this,
-					SettingsMenu.class);
-			startActivity(intent);
+			Button myButton = (Button) findViewById(R.id.button1);
+			myButton.setText("Continue Session");
+			
+//			Intent intent = new Intent(MiddlemanConnection.this,
+//					SettingsMenu.class);
+//			startActivity(intent);
 		}
 		else{
 			new SocketConnect().execute((Void) null);
@@ -127,9 +131,9 @@ public class MiddlemanConnection extends Activity implements OnItemSelectedListe
 	}
 
 	public void skipConnection(View view) {
-		Toast t = Toast.makeText(getApplicationContext(),
-				"Skipping... Not connected", Toast.LENGTH_LONG);
-		t.show();
+//		Toast t = Toast.makeText(getApplicationContext(),
+//				"Skipping... Not connected", Toast.LENGTH_LONG);
+//		t.show();
 		GameActivity.groupSession = false;
 		Intent intent = new Intent(MiddlemanConnection.this, SettingsMenu.class);
 		startActivity(intent);

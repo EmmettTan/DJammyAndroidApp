@@ -88,7 +88,7 @@ public class SettingsMenu extends Activity{
 	
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
+		//super.onBackPressed();
 		Intent intent = new Intent(this, MiddlemanConnection.class);
 		startActivity(intent);
 	}

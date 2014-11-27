@@ -29,6 +29,7 @@ public class GameActivity extends Activity {
 	public static final byte MSG_TYPE_START_GAME = 10;
 	public static final byte MSG_TYPE_BPM = 11;
 	
+	public static boolean is_master = false;
 	public static boolean groupSession = true; // If false, individual session is set
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
@@ -250,10 +251,12 @@ public class GameActivity extends Activity {
 						} else if (message_type == MSG_TYPE_SET_SOUND_OUT) {
 							instrument_volume = 1;
 							bpm_volume = (float) 0.7;
+							is_master = true;
 							Log.d("SoundThing", "Sound On!!");
 						} else if (message_type == MSG_TYPE_MUTE) {
 							instrument_volume = 0;
 							bpm_volume = 0;
+							is_master = false;
 							Log.d("SoundThing", "Sound Mute!!");
 						}
 
@@ -293,7 +296,9 @@ public class GameActivity extends Activity {
 			if (bassdrum_timer == 1) {
 				soundpool.play(bassdrum, bpm_volume, bpm_volume, 0, 0, 1);
 				bassdrum_timer = 0;
-				sendBPMMessage();
+				if (is_master){
+					sendBPMMessage();
+				}
 			} else {
 				bassdrum_timer = 1;
 			}
@@ -643,7 +648,7 @@ public class GameActivity extends Activity {
 			bass.init(bass.KEY_OF_C);
 		}
 
-		else if (key.compareTo("C#") == 0) {
+		else if (key.compareTo("C#/Db") == 0) {
 			vec72.init(vec72.KEY_OF_CSHARP);
 			vec216.init(vec216.KEY_OF_CSHARP);
 			bass.init(bass.KEY_OF_CSHARP);
@@ -655,7 +660,7 @@ public class GameActivity extends Activity {
 			bass.init(bass.KEY_OF_D);
 		}
 
-		else if (key.compareTo("D#") == 0) {
+		else if (key.compareTo("D#/Eb") == 0) {
 			vec72.init(vec72.KEY_OF_DSHARP);
 			vec216.init(vec216.KEY_OF_DSHARP);
 			bass.init(bass.KEY_OF_DSHARP);
@@ -673,7 +678,7 @@ public class GameActivity extends Activity {
 			bass.init(bass.KEY_OF_F);
 		}
 
-		else if (key.compareTo("F#") == 0) {
+		else if (key.compareTo("F#/Gb") == 0) {
 			vec72.init(vec72.KEY_OF_FSHARP);
 			vec216.init(vec216.KEY_OF_FSHARP);
 			bass.init(bass.KEY_OF_FSHARP);

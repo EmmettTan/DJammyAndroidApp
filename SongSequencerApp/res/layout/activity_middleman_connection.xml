@@ -146,6 +146,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="skipConnection"
-        android:text="Individual Session" />
+        android:text="@string/session_button" />
 
 </LinearLayout>

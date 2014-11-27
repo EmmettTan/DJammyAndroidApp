@@ -42,6 +42,7 @@
     <string name="title_activity_loop">LoopActivity</string>
     <string name="title_activity_loop_settings">LoopSettings</string>
     <string name="beats_divisions_number">4</string>
+    <string name="session_button">Individual Session</string>
 
 
 </resources>

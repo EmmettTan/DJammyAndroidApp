@@ -466,6 +466,7 @@ public class LoopActivity extends Activity {
 			break;
 		}
 	}
+	
 	public void initKey(String key) {
 
 		if (key.compareTo("G#/Ab") == 0) {
@@ -498,7 +499,7 @@ public class LoopActivity extends Activity {
 			bass.init(bass.KEY_OF_C);
 		}
 
-		else if (key.compareTo("C#") == 0) {
+		else if (key.compareTo("C#/Db") == 0) {
 			vec72.init(vec72.KEY_OF_CSHARP);
 			vec216.init(vec216.KEY_OF_CSHARP);
 			bass.init(bass.KEY_OF_CSHARP);
@@ -510,7 +511,7 @@ public class LoopActivity extends Activity {
 			bass.init(bass.KEY_OF_D);
 		}
 
-		else if (key.compareTo("D#") == 0) {
+		else if (key.compareTo("D#/Eb") == 0) {
 			vec72.init(vec72.KEY_OF_DSHARP);
 			vec216.init(vec216.KEY_OF_DSHARP);
 			bass.init(bass.KEY_OF_DSHARP);
@@ -528,7 +529,7 @@ public class LoopActivity extends Activity {
 			bass.init(bass.KEY_OF_F);
 		}
 
-		else if (key.compareTo("F#") == 0) {
+		else if (key.compareTo("F#/Gb") == 0) {
 			vec72.init(vec72.KEY_OF_FSHARP);
 			vec216.init(vec216.KEY_OF_FSHARP);
 			bass.init(bass.KEY_OF_FSHARP);
