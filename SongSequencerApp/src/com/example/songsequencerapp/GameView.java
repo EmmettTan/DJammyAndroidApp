@@ -11,7 +11,6 @@ public class GameView extends View {
 	public static final int DIVISIONS = 11;
 	private int light_blue = Color.rgb(97, 198, 223);
 	private int white = Color.rgb(255, 255, 255);
-	private int dark_blue = Color.rgb(0, 0, 153);
 	public static int touchPosition;
 	
 	public GameView(Context context, AttributeSet attribute_set) {

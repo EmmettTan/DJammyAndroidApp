@@ -98,7 +98,7 @@ public class LoopActivity extends Activity {
 		vec216 = new Vec216();
 		
 		bass = new Bass();
-		initKey(SettingsMenu.getKey());
+		initKey(MiddlemanConnection.getKey());
 
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		vec72.load(soundpool, getApplicationContext(), 0);
@@ -112,7 +112,7 @@ public class LoopActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		bpmTask = new BPMTimerTask();
-		bpm_timer.schedule(bpmTask, 0, SettingsMenu.getTempo());
+		bpm_timer.schedule(bpmTask, 0, MiddlemanConnection.getTempo());
 	}
 
 	@Override
@@ -532,7 +532,7 @@ public class LoopActivity extends Activity {
 		}
 
 		else {
-			Log.d("Key", "The Key " + SettingsMenu.getKey());
+			Log.d("Key", "The Key " + MiddlemanConnection.getKey());
 
 		}
 	}

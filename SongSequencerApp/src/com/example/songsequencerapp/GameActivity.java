@@ -89,7 +89,7 @@ public class GameActivity extends Activity {
 		bass = new Bass();
 		
 		my_instrument = SettingsMenu.getInstrument();
-		initKey(SettingsMenu.getKey());
+		initKey(MiddlemanConnection.getKey());
 
 		bpm_timer = new Timer();
 		sendmsg_timer = new Timer();
@@ -119,9 +119,9 @@ public class GameActivity extends Activity {
 		bpmTask = new BPMTimerTask();
 		sendmsg_task = new SendMsgTimerTask();
 
-		bpm_timer.schedule(bpmTask, 0, SettingsMenu.getTempo());
-		tcp_timer.schedule(tcp_task, 0, SettingsMenu.getTempo()/3);
-		sendmsg_timer.schedule(sendmsg_task, 5, SettingsMenu.getTempo()/3);
+		bpm_timer.schedule(bpmTask, 0, MiddlemanConnection.getTempo());
+		tcp_timer.schedule(tcp_task, 0, MiddlemanConnection.getTempo()/3);
+		sendmsg_timer.schedule(sendmsg_task, 5, MiddlemanConnection.getTempo()/3);
 	}
 
 	@Override
@@ -673,7 +673,7 @@ public class GameActivity extends Activity {
 		}
 
 		else {
-			Log.d("Key", "The Key " + SettingsMenu.getKey());
+			Log.d("Key", "The Key " + MiddlemanConnection.getKey());
 
 		}
 	}
