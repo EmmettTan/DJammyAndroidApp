@@ -72,5 +72,9 @@ public abstract class Instrument {
 		note[10] = soundpool.load(context, note_ID[10], 1);
 	}
 	
-	
+	public void unload(SoundPool soundpool) {
+		for (int i=0; i<11; i++){
+			soundpool.unload(note[i]);
+		}
+	}
 }

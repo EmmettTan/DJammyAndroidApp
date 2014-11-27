@@ -86,6 +86,12 @@ public class SettingsMenu extends Activity{
 	}
 
 	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		Intent intent = new Intent(this, MiddlemanConnection.class);
+		startActivity(intent);
+	}
 	
 	public void sendStartGameMessage() {
 		MyApplication app = (MyApplication) getApplication();

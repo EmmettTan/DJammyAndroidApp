@@ -73,16 +73,16 @@ public class LoopActivity extends Activity {
 		}
 		
 		switch(index){
-			case 1:
+			case 0:
 				loopInstrument1 = SettingsMenu.getInstrument();
 				break;
-			case 2:
+			case 1:
 				loopInstrument2 = SettingsMenu.getInstrument();
 				break;
-			case 3:
+			case 2:
 				loopInstrument3 = SettingsMenu.getInstrument();
 				break;
-			case 4:
+			case 3:
 				loopInstrument4 = SettingsMenu.getInstrument();
 				break;	
 		}
@@ -100,17 +100,18 @@ public class LoopActivity extends Activity {
 		bass = new Bass();
 		initKey(MiddlemanConnection.getKey());
 
-		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
-		vec72.load(soundpool, getApplicationContext(), 0);
-		vec216.load(soundpool, getApplicationContext(), 0);
-		bass.load(soundpool, getApplicationContext(), 0);
-		drums.load(soundpool, getApplicationContext(), 0);
-		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1);
+		soundpool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		vec72.load(soundpool, getApplicationContext(), 0);
+		vec216.load(soundpool, getApplicationContext(), 0);
+		bass.load(soundpool, getApplicationContext(), 0);
+		drums.load(soundpool, getApplicationContext(), 0);
+		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
+		
 		bpmTask = new BPMTimerTask();
 		bpm_timer.schedule(bpmTask, 0, MiddlemanConnection.getTempo());
 	}
@@ -119,6 +120,15 @@ public class LoopActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		bpmTask.cancel();
+		
+		vec72.unload(soundpool);
+		vec216.unload(soundpool);
+		bass.unload(soundpool);
+		drums.unload(soundpool);
+		soundpool.unload(bassdrum);
+
+		soundpool.release();
+		soundpool = null;
 	}
 
 	@Override
@@ -139,7 +149,6 @@ public class LoopActivity extends Activity {
 	
 	public void saveLoop(View view){
 		bpmTask.cancel();
-		Log.d("Loop", "Index: " + index + " Instrument: " + currentloopInstrument + " Array: " + loopArray);
 		globalLoopArray.add(index, loopArray.clone());
 		
 		Intent intent = new Intent(this, SettingsMenu.class);

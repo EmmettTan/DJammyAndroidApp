@@ -37,10 +37,10 @@ public class GameActivity extends Activity {
 	public int[] loopArray2 = null;
 	public int[] loopArray3 = null;
 	public int[] loopArray4 = null;
-	public int playPosition1 = 0;
-	public int playPosition2 = 0;
-	public int playPosition3 = 0;
-	public int playPosition4 = 0;
+	public int playPosition1;
+	public int playPosition2;
+	public int playPosition3;
+	public int playPosition4;
 	
 	public Vec72 vec72;
 	public Vec216 vec216;
@@ -102,30 +102,30 @@ public class GameActivity extends Activity {
 		tcp_instruments = new SparseIntArray();
 		tcp_keys = new SparseIntArray();
 
-		soundpool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+		soundpool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
+	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		
 		vec72.load(soundpool, getApplicationContext(), 0);
 		vec216.load(soundpool, getApplicationContext(), 0);
 		bass.load(soundpool, getApplicationContext(), 0);
 		drums.load(soundpool, getApplicationContext(), 0);
 		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
 		
-		if (LoopActivity.globalLoopArray != null){
-			//loopArray = new int[LoopActivity.globalLoopArray.length];
-			//loopArray = LoopActivity.globalLoopArray.clone();
-		}
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
+		playPosition1 = 1;
+		playPosition2 = 1;
+		playPosition3 = 1;
+		playPosition4 = 1;
+		
 		tcp_task = new TCPReadTimerTask();
 		bpmTask = new BPMTimerTask();
 		sendmsg_task = new SendMsgTimerTask();
-
 		bpm_timer.schedule(bpmTask, 0, MiddlemanConnection.getTempo());
-		tcp_timer.schedule(tcp_task, 0, MiddlemanConnection.getTempo()/3);
-		sendmsg_timer.schedule(sendmsg_task, 5, MiddlemanConnection.getTempo()/3);
+		tcp_timer.schedule(tcp_task, 0, MiddlemanConnection.getTempo()/2);
+		sendmsg_timer.schedule(sendmsg_task, 5, MiddlemanConnection.getTempo()/2);
 	}
 
 	@Override
@@ -134,6 +134,15 @@ public class GameActivity extends Activity {
 		bpmTask.cancel();
 		tcp_task.cancel();
 		sendmsg_task.cancel();
+		
+		vec72.unload(soundpool);
+		vec216.unload(soundpool);
+		bass.unload(soundpool);
+		drums.unload(soundpool);
+		soundpool.unload(bassdrum);
+		
+		soundpool.release();
+		soundpool = null;
 	}
 
 	@Override
