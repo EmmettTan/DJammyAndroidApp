@@ -4,7 +4,6 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
@@ -37,8 +36,8 @@
         <activity
             android:name=".GameActivity"
             android:label="@string/title_activity_game"
-            android:parentActivityName=".SettingsMenu" 
-            android:screenOrientation="portrait">
+            android:parentActivityName=".SettingsMenu"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.songsequencerapp.SettingsMenu" />
@@ -54,8 +53,8 @@
         <activity
             android:name=".LoopActivity"
             android:label="@string/title_activity_loop"
-            android:screenOrientation="portrait" 
-            android:parentActivityName=".SettingsMenu" >
+            android:parentActivityName=".SettingsMenu"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.songsequencerapp.SettingsMenu" />
@@ -63,6 +62,14 @@
         <activity
             android:name=".LoopSettings"
             android:label="@string/title_activity_loop_settings"
+            android:parentActivityName=".SettingsMenu" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.songsequencerapp.SettingsMenu" />
+        </activity>
+        <activity
+            android:name=".EasterEgg"
+            android:label="@string/title_activity_easter_egg" 
             android:parentActivityName=".SettingsMenu" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

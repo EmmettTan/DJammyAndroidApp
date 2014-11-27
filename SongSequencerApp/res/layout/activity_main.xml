@@ -19,6 +19,6 @@
         android:onClick="startGame"
         android:text="@string/start_button" />
 
-  
+    
 
 </LinearLayout>

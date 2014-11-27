@@ -157,5 +157,10 @@ public class SettingsMenu extends Activity{
 		
 	}
 	
+	public void easterEgg(View view) {
+		Intent intent = new Intent(this, EasterEgg.class);
+		startActivity(intent);
+	}
+	
 
 }
