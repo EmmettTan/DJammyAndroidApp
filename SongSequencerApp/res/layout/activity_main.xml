@@ -19,12 +19,6 @@
         android:onClick="startGame"
         android:text="@string/start_button" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:onClick="debugLoop"
-        android:text="Record a Loop" />
+  
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.example.songsequencerapp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,20 +24,23 @@ import android.view.WindowManager;
 
 public class GameActivity extends Activity {
 
-//	public final String KEY_JSON = "K";
-//	public final String INSTRUMENT_JSON = "I";
 	public static final byte MSG_TYPE_BROADCAST_KEYS = 1;
 	public static final byte MSG_TYPE_SET_SOUND_OUT = 2;
 	public static final byte MSG_TYPE_MUTE = 3;
 	public static final byte MSG_TYPE_START_GAME = 10;
-
+	
 	public static boolean groupSession = true; // If false, individual session is set
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
-
-	public int[] loopArray = null;
-	public boolean playLoop = false;
-	public int playPosition = 0;
+	
+	public int[] loopArray1;
+	public int[] loopArray2;
+	public int[] loopArray3;
+	public int[] loopArray4;
+	public int playPosition1 = 0;
+	public int playPosition2 = 0;
+	public int playPosition3 = 0;
+	public int playPosition4 = 0;
 	
 	public Vec72 vec72;
 	public Vec216 vec216;
@@ -72,6 +76,11 @@ public class GameActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_game);
 		
+		loopArray1 = LoopActivity.globalLoopArray.get(1).clone();
+		loopArray2 = LoopActivity.globalLoopArray.get(2).clone();
+		loopArray3 = LoopActivity.globalLoopArray.get(3).clone();
+		loopArray4 = LoopActivity.globalLoopArray.get(4).clone();
+		
 		drums = new Drums();
 		vec72 = new Vec72();
 		vec216 = new Vec216();
@@ -96,8 +105,8 @@ public class GameActivity extends Activity {
 		bassdrum = soundpool.load(getApplicationContext(), R.raw.bassdrum, 1); // in 2nd param u have to pass your desire ringtone
 		
 		if (LoopActivity.globalLoopArray != null){
-			loopArray = new int[LoopActivity.globalLoopArray.length];
-			loopArray = LoopActivity.globalLoopArray.clone();
+			//loopArray = new int[LoopActivity.globalLoopArray.length];
+			//loopArray = LoopActivity.globalLoopArray.clone();
 		}
 	}
 
@@ -278,15 +287,48 @@ public class GameActivity extends Activity {
 				playSound(GameView.touchPosition, my_instrument);
 				keyPressed = false;
 			}
-			if (playLoop == true && loopArray != null){
-				if (playPosition < loopArray.length){
-					playSound(loopArray[playPosition], LoopActivity.loopInstrument);
-					playPosition++;
+			if (SettingsMenu.playLoop1 == true){
+				if (playPosition1 < loopArray1.length){
+					playSound(loopArray1[playPosition1], LoopActivity.loopInstrument);
+					playPosition1++;
 				}
 				else{
-					playPosition = 0;
-					playSound(loopArray[playPosition], LoopActivity.loopInstrument);
-					playPosition++;
+					playPosition1 = 0;
+					playSound(loopArray1[playPosition1], LoopActivity.loopInstrument);
+					playPosition1++;
+				}
+			}
+			if (SettingsMenu.playLoop2 == true){
+				if (playPosition2 < loopArray2.length){
+					playSound(loopArray2[playPosition2], LoopActivity.loopInstrument);
+					playPosition2++;
+				}
+				else{
+					playPosition2 = 0;
+					playSound(loopArray2[playPosition2], LoopActivity.loopInstrument);
+					playPosition2++;
+				}
+			}
+			if (SettingsMenu.playLoop3 == true){
+				if (playPosition3 < loopArray3.length){
+					playSound(loopArray3[playPosition3], LoopActivity.loopInstrument);
+					playPosition3++;
+				}
+				else{
+					playPosition3 = 0;
+					playSound(loopArray3[playPosition3], LoopActivity.loopInstrument);
+					playPosition3++;
+				}
+			}
+			if (SettingsMenu.playLoop4 == true){
+				if (playPosition4 < loopArray4.length){
+					playSound(loopArray4[playPosition4], LoopActivity.loopInstrument);
+					playPosition4++;
+				}
+				else{
+					playPosition4 = 0;
+					playSound(loopArray4[playPosition4], LoopActivity.loopInstrument);
+					playPosition4++;
 				}
 			}
 		}
@@ -299,11 +341,6 @@ public class GameActivity extends Activity {
 				sendMessage(my_instrument, my_key);
 			}
 		}
-	}
-
-	public void playLoop(View view) {
-		playLoop = !playLoop;
-		playPosition = 0;
 	}
 
 	@Override

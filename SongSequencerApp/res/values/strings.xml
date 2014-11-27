@@ -37,6 +37,7 @@
     <string name="ChooseBpm">Choose Tempo:</string>
     <string name="sound_button">Sound</string>
     <string name="play_loop_button">Play Loop</string>
+    <string name="RecordLoop">Record Loops</string>
     
     <string name="title_activity_loop">LoopActivity</string>
     <string name="title_activity_loop_settings">LoopSettings</string>

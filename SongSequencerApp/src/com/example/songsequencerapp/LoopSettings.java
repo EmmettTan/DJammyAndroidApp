@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -55,5 +56,17 @@ public class LoopSettings extends Activity {
 			Toast t = Toast.makeText(getApplicationContext(), "Beats Divisions should be greater than 0", Toast.LENGTH_LONG);
 			t.show();
 		}
+	}
+	public void setSlot(View view){
+		Button b = (Button) view;
+		String temp = b.getText().toString();
+		if (temp.compareTo("Loop 1") == 0)
+			LoopActivity.index=0;
+		else if (temp.compareTo("Loop 2") == 0)
+			LoopActivity.index=1;
+		else if (temp.compareTo("Loop 3") == 0)
+			LoopActivity.index=2;
+		else if((temp.compareTo("Loop 4") == 0))
+			LoopActivity.index=3;
 	}
 }

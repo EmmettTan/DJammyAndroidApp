@@ -26,6 +26,10 @@ public class SettingsMenu extends Activity implements OnSeekBarChangeListener, O
 	private static int Tempo=tempo_start;
 	private static String key;
 	private static int instrument = 0;
+	public static boolean playLoop1 = false;
+	public static boolean playLoop2 = false;
+	public static boolean playLoop3 = false;
+	public static boolean playLoop4 = false;
 
 
 	@Override
@@ -189,7 +193,10 @@ public class SettingsMenu extends Activity implements OnSeekBarChangeListener, O
 			e.printStackTrace();
 		}
 	}
-	
+	public void debugLoop(View view){
+		Intent intent = new Intent(this, LoopSettings.class);
+		startActivity(intent);
+	}
 	// SETS the SOUND OUTPUT DEVICE
 	public void setDeviceSoundOutput(View view) {
 		Toast t = Toast.makeText(getApplicationContext(), "You're the host now!", Toast.LENGTH_LONG);
@@ -213,5 +220,22 @@ public class SettingsMenu extends Activity implements OnSeekBarChangeListener, O
 			e.printStackTrace();
 		}
 	}
+	public void setLoop1(View view){
+		playLoop1=!playLoop1;
+		
+	}
+	public void setLoop2(View view){
+		playLoop2=!playLoop2;
+		
+	}
+	public void setLoop3(View view){
+		playLoop3=!playLoop3;
+		
+	}
+	public void setLoop4(View view){
+		playLoop4=!playLoop4;
+		
+	}
+	
 
 }

@@ -1,16 +1,16 @@
 package com.example.songsequencerapp;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -20,12 +20,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 public class LoopActivity extends Activity {
 
 	public int loopArray[];
-	public static int globalLoopArray[] = null;
+	public static LinkedList<int[]> globalLoopArray = new LinkedList<int[]>();
+	public static int index;
 	ProgressBar progress_bar;
 	int progress_percentage = 0;
 	int recordPosition = 0;
@@ -49,7 +49,7 @@ public class LoopActivity extends Activity {
 	Timer bpm_timer;
 	BPMTimerTask bpmTask;
 
-	public static int loopInstrument = 3;
+	public static int loopInstrument = SettingsMenu.getInstrument();
 	public int my_key;
 
 	@Override
@@ -61,18 +61,25 @@ public class LoopActivity extends Activity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_loop);
-
+		
+		if(globalLoopArray.size() < 4){
+			int []setup = new int[1];
+			setup[0] = -1;
+			for (int i=0; i<4; i++)
+				globalLoopArray.add(setup);
+		}
+		
 		loopArray = new int[LoopSettings.beatNumber];
 		progress_bar = (ProgressBar) findViewById(R.id.progressBar1);
 		bpm_timer = new Timer();
 
 		drums = new Drums();
 		vec72 = new Vec72();
-		vec72.init(vec72.KEY_OF_B);
+		
 		vec216 = new Vec216();
-		vec216.init(vec216.KEY_OF_B);
+		
 		bass = new Bass();
-		bass.init(bass.KEY_OF_B);
+		initKey(SettingsMenu.getKey());
 
 		soundpool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		vec72.load(soundpool, getApplicationContext(), 0);
@@ -112,12 +119,11 @@ public class LoopActivity extends Activity {
 	}
 	
 	public void saveLoop(View view){
-		bpmTask.cancel();
+		//bpmTask.cancel();
 		
-		globalLoopArray = new int[loopArray.length];
-		globalLoopArray = loopArray.clone();
+		globalLoopArray.add(index, loopArray.clone());
 		
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(this, SettingsMenu.class);
 		startActivity(intent);
 	}
 	
@@ -431,6 +437,85 @@ public class LoopActivity extends Activity {
 			Log.d("PlaySound", "Redundant Key Pressed "
 					+ LoopView.touchPosition);
 			break;
+		}
+	}
+	public void initKey(String key) {
+
+		if (key.compareTo("G#/Ab") == 0) {
+			vec72.init(vec72.KEY_OF_GSHARP);
+			vec216.init(vec216.KEY_OF_GSHARP);
+			bass.init(bass.KEY_OF_GSHARP);
+		}
+
+		else if (key.compareTo("A") == 0) {
+			vec72.init(vec72.KEY_OF_A);
+			vec216.init(vec216.KEY_OF_A);
+			bass.init(bass.KEY_OF_A);
+		}
+
+		else if (key.compareTo("A#/Bb") == 0) {
+			vec72.init(vec72.KEY_OF_ASHARP);
+			vec216.init(vec216.KEY_OF_ASHARP);
+			bass.init(bass.KEY_OF_ASHARP);
+		}
+
+		else if (key.compareTo("B") == 0) {
+			vec72.init(vec72.KEY_OF_B);
+			vec216.init(vec216.KEY_OF_B);
+			bass.init(bass.KEY_OF_B);
+		}
+
+		else if (key.compareTo("C") == 0) {
+			vec72.init(vec72.KEY_OF_C);
+			vec216.init(vec216.KEY_OF_C);
+			bass.init(bass.KEY_OF_C);
+		}
+
+		else if (key.compareTo("C#") == 0) {
+			vec72.init(vec72.KEY_OF_CSHARP);
+			vec216.init(vec216.KEY_OF_CSHARP);
+			bass.init(bass.KEY_OF_CSHARP);
+		}
+
+		else if (key.compareTo("D") == 0) {
+			vec72.init(vec72.KEY_OF_D);
+			vec216.init(vec216.KEY_OF_D);
+			bass.init(bass.KEY_OF_D);
+		}
+
+		else if (key.compareTo("D#") == 0) {
+			vec72.init(vec72.KEY_OF_DSHARP);
+			vec216.init(vec216.KEY_OF_DSHARP);
+			bass.init(bass.KEY_OF_DSHARP);
+		}
+
+		else if (key.compareTo("E") == 0) {
+			vec72.init(vec72.KEY_OF_E);
+			vec216.init(vec216.KEY_OF_E);
+			bass.init(bass.KEY_OF_E);
+		}
+
+		else if (key.compareTo("F") == 0) {
+			vec72.init(vec72.KEY_OF_F);
+			vec216.init(vec216.KEY_OF_F);
+			bass.init(bass.KEY_OF_F);
+		}
+
+		else if (key.compareTo("F#") == 0) {
+			vec72.init(vec72.KEY_OF_FSHARP);
+			vec216.init(vec216.KEY_OF_FSHARP);
+			bass.init(bass.KEY_OF_FSHARP);
+		}
+
+		else if (key.compareTo("G") == 0) {
+			vec72.init(vec72.KEY_OF_G);
+			vec216.init(vec216.KEY_OF_G);
+			bass.init(bass.KEY_OF_G);
+		}
+
+		else {
+			Log.d("Key", "The Key " + SettingsMenu.getKey());
+
 		}
 	}
 }
