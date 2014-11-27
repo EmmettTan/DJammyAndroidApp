@@ -3,7 +3,6 @@ package com.example.songsequencerapp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,10 +32,10 @@ public class GameActivity extends Activity {
 	public static boolean onTouch = false;
 	boolean keyPressed = false;
 	
-	public int[] loopArray1;
-	public int[] loopArray2;
-	public int[] loopArray3;
-	public int[] loopArray4;
+	public int[] loopArray1 = null;
+	public int[] loopArray2 = null;
+	public int[] loopArray3 = null;
+	public int[] loopArray4 = null;
 	public int playPosition1 = 0;
 	public int playPosition2 = 0;
 	public int playPosition3 = 0;
@@ -76,10 +75,12 @@ public class GameActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_game);
 		
-		loopArray1 = LoopActivity.globalLoopArray.get(1).clone();
-		loopArray2 = LoopActivity.globalLoopArray.get(2).clone();
-		loopArray3 = LoopActivity.globalLoopArray.get(3).clone();
-		loopArray4 = LoopActivity.globalLoopArray.get(4).clone();
+		if (LoopActivity.globalLoopArray.size() >= 4 ){
+			loopArray1 = LoopActivity.globalLoopArray.get(1).clone();
+			loopArray2 = LoopActivity.globalLoopArray.get(2).clone();
+			loopArray3 = LoopActivity.globalLoopArray.get(3).clone();
+			loopArray4 = LoopActivity.globalLoopArray.get(4).clone();
+		}
 		
 		drums = new Drums();
 		vec72 = new Vec72();
@@ -179,21 +180,6 @@ public class GameActivity extends Activity {
 		}
 	}
 
-//	// Compose message before sending
-//	private String composeMessage(int instrument, int key) {
-//		JSONObject json = new JSONObject();
-//
-//		try {
-//			json.put(INSTRUMENT_JSON, instrument);
-//			json.put(KEY_JSON, key);
-//		} catch (JSONException e) {
-//			Log.d("MyError", "Error putting in JSON!");
-//			e.printStackTrace();
-//		}
-//
-//		return json.toString();
-//	}
-
 	// SEND the keys and notes only
 	public void sendMessage(int instrument, int key) { // BROADCAST MODE!
 		MyApplication app = (MyApplication) getApplication();
@@ -287,47 +273,47 @@ public class GameActivity extends Activity {
 				playSound(GameView.touchPosition, my_instrument);
 				keyPressed = false;
 			}
-			if (SettingsMenu.playLoop1 == true){
+			if (SettingsMenu.playLoop1 == true && loopArray1 != null){
 				if (playPosition1 < loopArray1.length){
-					playSound(loopArray1[playPosition1], LoopActivity.loopInstrument);
+					playSound(loopArray1[playPosition1], LoopActivity.loopInstrument1);
 					playPosition1++;
 				}
 				else{
 					playPosition1 = 0;
-					playSound(loopArray1[playPosition1], LoopActivity.loopInstrument);
+					playSound(loopArray1[playPosition1], LoopActivity.loopInstrument1);
 					playPosition1++;
 				}
 			}
-			if (SettingsMenu.playLoop2 == true){
+			if (SettingsMenu.playLoop2 == true && loopArray2 != null){
 				if (playPosition2 < loopArray2.length){
-					playSound(loopArray2[playPosition2], LoopActivity.loopInstrument);
+					playSound(loopArray2[playPosition2], LoopActivity.loopInstrument2);
 					playPosition2++;
 				}
 				else{
 					playPosition2 = 0;
-					playSound(loopArray2[playPosition2], LoopActivity.loopInstrument);
+					playSound(loopArray2[playPosition2], LoopActivity.loopInstrument2);
 					playPosition2++;
 				}
 			}
-			if (SettingsMenu.playLoop3 == true){
+			if (SettingsMenu.playLoop3 == true && loopArray3 != null){
 				if (playPosition3 < loopArray3.length){
-					playSound(loopArray3[playPosition3], LoopActivity.loopInstrument);
+					playSound(loopArray3[playPosition3], LoopActivity.loopInstrument3);
 					playPosition3++;
 				}
 				else{
 					playPosition3 = 0;
-					playSound(loopArray3[playPosition3], LoopActivity.loopInstrument);
+					playSound(loopArray3[playPosition3], LoopActivity.loopInstrument3);
 					playPosition3++;
 				}
 			}
-			if (SettingsMenu.playLoop4 == true){
+			if (SettingsMenu.playLoop4 == true && loopArray4 != null){
 				if (playPosition4 < loopArray4.length){
-					playSound(loopArray4[playPosition4], LoopActivity.loopInstrument);
+					playSound(loopArray4[playPosition4], LoopActivity.loopInstrument4);
 					playPosition4++;
 				}
 				else{
 					playPosition4 = 0;
-					playSound(loopArray4[playPosition4], LoopActivity.loopInstrument);
+					playSound(loopArray4[playPosition4], LoopActivity.loopInstrument4);
 					playPosition4++;
 				}
 			}

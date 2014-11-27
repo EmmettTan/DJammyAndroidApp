@@ -29,8 +29,8 @@
     <string name="ChooseTune">Choose Your Tune:</string>
     <string name="Synth1">Drums</string>
     <string name="Synth2">Bass</string>
-    <string name="Synth3">Xylo</string>
-    <string name="Synth4">Strings</string>
+    <string name="Synth3">Strings</string>
+    <string name="Synth4">Xylo</string>
     <string name="ChooseKey">Choose Key:</string>
     <string name="title_activity_settings_menu">SettingsMenu</string>
     <string name="Done">Done</string>

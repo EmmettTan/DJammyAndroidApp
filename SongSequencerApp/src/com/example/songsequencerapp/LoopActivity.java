@@ -1,6 +1,5 @@
 package com.example.songsequencerapp;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,7 +48,11 @@ public class LoopActivity extends Activity {
 	Timer bpm_timer;
 	BPMTimerTask bpmTask;
 
-	public static int loopInstrument = SettingsMenu.getInstrument();
+	public static int currentloopInstrument = SettingsMenu.getInstrument();
+	public static int loopInstrument1 = SettingsMenu.getInstrument();
+	public static int loopInstrument2 = SettingsMenu.getInstrument();
+	public static int loopInstrument3 = SettingsMenu.getInstrument();
+	public static int loopInstrument4 = SettingsMenu.getInstrument();
 	public int my_key;
 
 	@Override
@@ -68,6 +71,22 @@ public class LoopActivity extends Activity {
 			for (int i=0; i<4; i++)
 				globalLoopArray.add(setup);
 		}
+		
+		switch(index){
+			case 1:
+				loopInstrument1 = SettingsMenu.getInstrument();
+				break;
+			case 2:
+				loopInstrument2 = SettingsMenu.getInstrument();
+				break;
+			case 3:
+				loopInstrument3 = SettingsMenu.getInstrument();
+				break;
+			case 4:
+				loopInstrument4 = SettingsMenu.getInstrument();
+				break;	
+		}
+		currentloopInstrument = SettingsMenu.getInstrument();
 		
 		loopArray = new int[LoopSettings.beatNumber];
 		progress_bar = (ProgressBar) findViewById(R.id.progressBar1);
@@ -93,7 +112,7 @@ public class LoopActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		bpmTask = new BPMTimerTask();
-		bpm_timer.schedule(bpmTask, 210, 210);
+		bpm_timer.schedule(bpmTask, 0, SettingsMenu.getTempo());
 	}
 
 	@Override
@@ -168,7 +187,6 @@ public class LoopActivity extends Activity {
 	// PLAY notes (timer)
 	public class BPMTimerTask extends TimerTask {
 		public void run() {
-//			Log.d("BPMTimerTask", "Playing note");
 			if (bassdrum_timer == 1) {
 				soundpool.play(bassdrum, bpm_volume, bpm_volume, 0, 0, 1);
 				bassdrum_timer = 0;
@@ -178,7 +196,7 @@ public class LoopActivity extends Activity {
 			}
 			if (startRecording && recordPosition < LoopSettings.beatNumber){
 				if (onTouch == true || keyPressed == true) {
-					playSound(LoopView.touchPosition, loopInstrument);
+					playSound(LoopView.touchPosition, currentloopInstrument);
 					keyPressed = false;
 					loopArray[recordPosition] = LoopView.touchPosition;
 				}
@@ -191,12 +209,12 @@ public class LoopActivity extends Activity {
 			}
 			else if (startRecording){
 				if (playPosition < LoopSettings.beatNumber){
-					playSound(loopArray[playPosition], loopInstrument);
+					playSound(loopArray[playPosition], currentloopInstrument);
 					playPosition++;
 				}
 				else{
 					playPosition = 0;
-					playSound(loopArray[playPosition], loopInstrument);
+					playSound(loopArray[playPosition], currentloopInstrument);
 					playPosition++;
 				}
 			}
