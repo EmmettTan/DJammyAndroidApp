@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.example.songsequencerapp.GameActivity.TCPReadTimerTask;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +21,9 @@ public class EasterEgg extends Activity {
 	public int sandstorm;
 	SoundPool soundpool;
 	MediaPlayer mediaplayer;
+	Timer sandstorm_timer;
+	SandstormTask sandstorm_task;
+	
 
 	public static final byte MSG_TYPE_BPM = 11;
 
@@ -31,7 +36,7 @@ public class EasterEgg extends Activity {
 		// soundpool = new SoundPool(8, AudioManager.STREAM_MUSIC, 0);
 		// sandstorm = soundpool.load(getApplicationContext(), R.raw.easter, 1);
 		// soundpool.play(sandstorm, 1, 1, 0, 0, 1);
-		
+
 	}
 
 	@Override
@@ -56,22 +61,19 @@ public class EasterEgg extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		sandstorm();
+		sandstorm_task = new SandstormTask();
+		sandstorm_timer = new Timer();
+		sandstorm_timer.schedule(sandstorm_task, 0, 417);
 	}
 
-	public void sandstorm() {
-		long time1 = 0;
-		long time2 = 0;
-		while (true) {
-			time1 = System.nanoTime();
-			while (time2 - time1 < 434782608.6956522) {
-				time2 = System.nanoTime();
-			}
+	// SENDS messages from time to time
+	public class SandstormTask extends TimerTask {
+		public void run() {
 			sendBPMMessage();
-
 		}
-
 	}
+
+	
 
 	// SEND the BPM beats to the DE2
 	public void sendBPMMessage() {
@@ -94,6 +96,12 @@ public class EasterEgg extends Activity {
 		}
 	}
 
+	@Override
+	public void onPause(){
+		super.onPause();
+		sandstorm_task.cancel();
+	}
+	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
