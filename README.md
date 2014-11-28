@@ -18,6 +18,6 @@ If there is interest in a live version of this, we might consider working furthe
 Source Code
 ====================
 
-Feel free to download the source code and run the android app. When at the middleman connection screen that asks for an IP, just click "Individual Session" and pick your instruments, tempo and key and loop settings. Tempo is not complete yet, and loop configuration is buggy. 
+Feel free to download the source code and run the android app. When at the middleman connection screen that asks for an IP, just click "Individual Session" and pick your instruments, tempo, key and loop settings. Tempo is not complete yet, and loop configuration is buggy. 
 
 Don't bother with the other de2 files. Even if you have a de2, it is difficult to set up the full project, and it won't be worth it unless you have the LED strip and parts necessary to set up the circuit. If you are interested, email me and I will step you through the process. UBCEmmettTan@gmail.com
