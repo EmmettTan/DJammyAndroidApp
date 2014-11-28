@@ -5,7 +5,9 @@ EECE 381 Android Project created November 27, 2014.
 
 Authors: Lucas Gomes, Rayaan Choudri, Kaibo Ma and Emmett Tan.
 
-This is our music sequencing android app. Up to four users can connect to each other, create loops,  and make music collaboratively on their smartphone. This project was made on a Altera DE2 Board, so the multi-user features are unavailable. See a video demo at https://www.youtube.com/watch?v=CI8SVcV2FZ8 
+This is our music sequencing android app. Up to four users can connect to each other, create loops,  and make music collaboratively on their smartphone. This project was developed with a Altera DE2 Board, so the multi-user features are unavailable. 
+
+See a video demo at https://www.youtube.com/watch?v=CI8SVcV2FZ8 
 
 Easter Egg https://www.youtube.com/watch?v=GP930IH5RXo
 
